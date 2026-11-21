@@ -1,0 +1,48 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "algorithm": {
+      "const": "bubble_sort",
+      "default": "bubble_sort",
+      "title": "Algorithm",
+      "type": "string"
+    },
+    "mode": {
+      "const": "experiment",
+      "default": "experiment",
+      "title": "Mode",
+      "type": "string"
+    },
+    "input": {
+      "$ref": "#/$defs/ExperimentInput"
+    },
+    "parameters": {
+      "additionalProperties": true,
+      "title": "Parameters",
+      "type": "object"
+    },
+    "visualization": {
+      "$ref": "#/$defs/Visualization"
+    },
+    "metrics": {
+      "items": {
+        "enum": [
+          "comparisons",
+          "swaps",
+          "elapsed_ms"
+        ],
+        "type": "string"
+      },
+      "title": "Metrics",
+      "type": "array"
+    }
+  },
+  "title": "ExperimentConfig",
+  "type": "object"
+}

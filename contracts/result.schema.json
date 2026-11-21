@@ -1,0 +1,74 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "config": {
+      "$ref": "#/$defs/ExperimentConfig"
+    },
+    "input": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Input",
+      "type": "array"
+    },
+    "output": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Output",
+      "type": "array"
+    },
+    "metrics": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Metrics",
+      "type": "object"
+    },
+    "validation": {
+      "$ref": "#/$defs/ValidationResult"
+    },
+    "trace": {
+      "items": {
+        "$ref": "#/$defs/TraceEvent"
+      },
+      "title": "Trace",
+      "type": "array"
+    },
+    "trace_truncated": {
+      "title": "Trace Truncated",
+      "type": "boolean"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "status",
+    "config",
+    "input",
+    "output",
+    "metrics",
+    "validation",
+    "trace",
+    "trace_truncated",
+    "created_at"
+  ],
+  "title": "ExperimentResult",
+  "type": "object"
+}

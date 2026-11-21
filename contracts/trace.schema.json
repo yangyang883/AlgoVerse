@@ -1,0 +1,55 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "step": {
+      "minimum": 0,
+      "title": "Step",
+      "type": "integer"
+    },
+    "type": {
+      "enum": [
+        "initial",
+        "compare",
+        "swap",
+        "write",
+        "pivot",
+        "complete"
+      ],
+      "title": "Type",
+      "type": "string"
+    },
+    "indices": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Indices",
+      "type": "array"
+    },
+    "array": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Array"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    }
+  },
+  "required": [
+    "step",
+    "type"
+  ],
+  "title": "TraceEvent",
+  "type": "object"
+}

@@ -1,0 +1,40 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "level": {
+      "enum": [
+        "L1",
+        "L2",
+        "L3",
+        "L4"
+      ],
+      "title": "Level",
+      "type": "string"
+    },
+    "executable": {
+      "title": "Executable",
+      "type": "boolean"
+    },
+    "visualizable": {
+      "title": "Visualizable",
+      "type": "boolean"
+    },
+    "max_input_size": {
+      "title": "Max Input Size",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "name",
+    "level",
+    "executable",
+    "visualizable",
+    "max_input_size"
+  ],
+  "title": "AlgorithmCapability",
+  "type": "object"
+}
