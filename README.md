@@ -46,4 +46,4 @@ npm run build
 
 ## 协作与进度
 
-五人职责和第一周任务见 `docs/team-responsibilities.md`；20 天路线和硬验收见 `docs/development-roadmap.md`；PR 规范见 `CONTRIBUTING.md`。当前只完成 D1 手动配置闭环。D2 优先 SQLite 追溯和 Qwen Provider，D3 联通自然语言解析并实测模型可达性。D7 未通过 P0 则不开始 P1，D12 冻结 P0 新功能。暂不提供开源许可证，待项目所有者确定。
+五人职责和第一周任务见 `docs/team-responsibilities.md`；每人四份、按五天周期执行的详细指导见 `docs/guides/README.md`；20 天路线和硬验收见 `docs/development-roadmap.md`；PR 规范见 `CONTRIBUTING.md`。当前只完成 D1 手动配置闭环。D2 优先 SQLite 追溯和 Qwen Provider，D3 联通自然语言解析并实测模型可达性。D7 未通过 P0 则不开始 P1，D12 冻结 P0 新功能。暂不提供开源许可证，待项目所有者确定。
