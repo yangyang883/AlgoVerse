@@ -1,14 +1,9 @@
-import os
-
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.db.experiments import load_result
 from app.main import app
-
-pytestmark = pytest.mark.skipif(os.getenv("ALGOVERSE_SKIP_HTTP_TEST") == "1",
-                                reason="event loop unavailable in sandbox")
 
 
 @pytest.fixture
@@ -43,7 +38,7 @@ def test_missing_and_invalid(client):
 
 
 def test_transaction_failure_has_no_record(client, monkeypatch):
-    import app.main as main
+    from app import main
 
     def fail(_result):
         raise SQLAlchemyError("test database error")

@@ -1,18 +1,26 @@
+import logging
 from uuid import uuid4
 
-import logging
-
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
 from pydantic import ValidationError
 
 from app.db.experiments import load_result, save_result
 from app.engine.registry import CAPABILITIES
 from app.schemas.models import (
-    APIError, APIResponse, ChatRequest, ChatResult, CompareRequest, CompareResult,
-    ExperimentConfig, ExperimentResult, ParseRequest, ParseResult, ReportResult,
+    APIError,
+    APIResponse,
+    ChatRequest,
+    ChatResult,
+    CompareRequest,
+    CompareResult,
+    ExperimentConfig,
+    ExperimentResult,
+    ParseRequest,
+    ParseResult,
+    ReportResult,
 )
 from app.services.experiment import run_experiment
 

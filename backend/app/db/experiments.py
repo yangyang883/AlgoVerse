@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session, declarative_base
 
 from app.schemas.models import ExperimentResult
 
-
 Base = declarative_base()
 
 
@@ -37,7 +36,9 @@ class ExperimentRecord(Base):
 def database_engine():
     path = Path(os.getenv("ALGOVERSE_DB_PATH", "algoverse.db")).expanduser().resolve()
     path.parent.mkdir(parents=True, exist_ok=True)
-    engine = create_engine(f"sqlite:///{path.as_posix()}", connect_args={"check_same_thread": False})
+    engine = create_engine(
+        f"sqlite:///{path.as_posix()}", connect_args={"check_same_thread": False}
+    )
     Base.metadata.create_all(engine)
     return engine
 
@@ -57,9 +58,8 @@ def save_result(result: ExperimentResult) -> None:
         execution_environment={"python": platform.python_version()},
         status=result.status, created_at=result.created_at,
     )
-    with Session(database_engine()) as session:
-        with session.begin():
-            session.add(record)
+    with Session(database_engine()) as session, session.begin():
+        session.add(record)
 
 
 def load_result(run_id: str):

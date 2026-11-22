@@ -3,8 +3,8 @@ import time
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from app.engine.sorting.bubble import bubble_sort
 from app.engine.registry import CAPABILITIES
+from app.engine.sorting.bubble import bubble_sort
 from app.schemas.models import ExperimentConfig, ExperimentResult, ValidationResult
 
 
