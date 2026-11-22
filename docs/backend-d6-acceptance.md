@@ -42,4 +42,4 @@ SQLite Engine 按数据库路径复用，建表仅在首次创建 Engine 时执�
 
 全后端 Ruff 仍有 8 项，**未通过**。契约生成和前端类型/构建须以本次最终执行记录为准。真实 Qwen、四排序和 RAG 仍缺组员 1、2 的交付；Mock 测试不是模型联调通过。
 
-最终本地验证：`python -m pytest -q` 为 **23 passed、0 skipped**；`python scripts/export_contracts.py --check` 通过；`npm run typecheck`、`npm run build` 通过。全后端 Ruff 仍为上述 8 项组员 2 文件问题，未计为通过。受限执行窗口的最小 `asyncio.run(asyncio.sleep(0))` 会卡住；正常 Windows 执行环境中完整 pytest 通过。CI 未实际运行，不能声称 CI 通过。
+最终本地验证：`python -m pytest -q` 为 **24 passed、0 skipped**，包括有限并发的多会话隔离测试；`python scripts/export_contracts.py --check` 通过；`npm run typecheck`、`npm run build` 通过。全后端 Ruff 仍为上述 8 项组员 2 文件问题，未计为通过。受限执行窗口的最小 `asyncio.run(asyncio.sleep(0))` 会卡住；正常 Windows 执行环境中完整 pytest 通过。CI 未实际运行，不能声称 CI 通过。

@@ -103,3 +103,17 @@ def test_openapi_documents_error_envelope():
     assert "500" in route["responses"]
     schema = route["responses"]["409"]["content"]["application/json"]["schema"]
     assert "$ref" in schema
+
+
+def test_concurrent_sessions_remain_isolated():
+    service = ConversationService(ttl_seconds=60, max_sessions=20)
+
+    def create_and_revise(seed):
+        state = service.start(ExperimentConfig(input={"size": 20, "seed": seed}))
+        return service.revise(state.session_id, {"input.size": 10 + seed})
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        states = list(pool.map(create_and_revise, range(8)))
+    assert len({state.session_id for state in states}) == 8
+    assert all(service.get(state.session_id).last_config.input.seed == seed
+               for seed, state in enumerate(states))
