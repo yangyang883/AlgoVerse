@@ -44,6 +44,13 @@
       "default": "",
       "title": "Summary",
       "type": "string"
+    },
+    "modified_fields": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Modified Fields",
+      "type": "array"
     }
   },
   "required": [

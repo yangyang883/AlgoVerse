@@ -87,6 +87,15 @@ class ConversationState(StrictModel):
     last_config: Optional[ExperimentConfig] = None
     last_run_id: Optional[str] = None
     summary: str = ""
+    modified_fields: List[str] = Field(default_factory=list)
+
+
+class ConversationStartRequest(StrictModel):
+    config: ExperimentConfig
+
+
+class ConversationRevisionRequest(StrictModel):
+    changes: Dict[str, Any] = Field(min_length=1)
 
 
 class APIError(StrictModel):
@@ -113,6 +122,7 @@ class ParseResult(StrictModel):
     config: ExperimentConfig
     source: Literal["qwen", "manual", "mock"]
     requires_confirmation: bool = True
+    session_id: Optional[str] = None
 
 
 class ChatRequest(StrictModel):

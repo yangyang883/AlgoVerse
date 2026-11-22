@@ -79,6 +79,132 @@
         }
       }
     },
+    "/api/v1/conversations": {
+      "post": {
+        "summary": "Start Conversation",
+        "operationId": "start_conversation_api_v1_conversations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversationStartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse_ConversationState_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{session_id}": {
+      "get": {
+        "summary": "Get Conversation",
+        "operationId": "get_conversation_api_v1_conversations__session_id__get",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse_ConversationState_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{session_id}/revise": {
+      "post": {
+        "summary": "Revise Conversation",
+        "operationId": "revise_conversation_api_v1_conversations__session_id__revise_post",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversationRevisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse_ConversationState_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/chat": {
       "post": {
         "summary": "Chat",
@@ -370,6 +496,39 @@
           "request_id"
         ],
         "title": "APIResponse[CompareResult]"
+      },
+      "APIResponse_ConversationState_": {
+        "properties": {
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConversationState-Output"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/APIError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_id"
+        ],
+        "title": "APIResponse[ConversationState]"
       },
       "APIResponse_ExperimentResult_": {
         "properties": {
@@ -689,6 +848,35 @@
         ],
         "title": "CompareResult"
       },
+      "ConversationRevisionRequest": {
+        "properties": {
+          "changes": {
+            "additionalProperties": true,
+            "type": "object",
+            "minProperties": 1,
+            "title": "Changes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "changes"
+        ],
+        "title": "ConversationRevisionRequest"
+      },
+      "ConversationStartRequest": {
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/ExperimentConfig"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "config"
+        ],
+        "title": "ConversationStartRequest"
+      },
       "ConversationState-Input": {
         "properties": {
           "session_id": {
@@ -731,6 +919,13 @@
             "type": "string",
             "title": "Summary",
             "default": ""
+          },
+          "modified_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Modified Fields"
           }
         },
         "additionalProperties": false,
@@ -782,6 +977,13 @@
             "type": "string",
             "title": "Summary",
             "default": ""
+          },
+          "modified_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Modified Fields"
           }
         },
         "additionalProperties": false,
@@ -1088,6 +1290,17 @@
             "type": "boolean",
             "title": "Requires Confirmation",
             "default": true
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
           }
         },
         "additionalProperties": false,
@@ -1116,6 +1329,17 @@
             "type": "boolean",
             "title": "Requires Confirmation",
             "default": true
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
           }
         },
         "additionalProperties": false,

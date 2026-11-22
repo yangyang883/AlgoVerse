@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "text": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+    },
+    "session_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Session Id"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "ParseRequest",
+  "type": "object"
+}

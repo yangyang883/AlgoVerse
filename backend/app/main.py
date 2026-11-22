@@ -16,11 +16,19 @@ from app.schemas.models import (
     ChatResult,
     CompareRequest,
     CompareResult,
+    ConversationRevisionRequest,
+    ConversationStartRequest,
+    ConversationState,
     ExperimentConfig,
     ExperimentResult,
     ParseRequest,
     ParseResult,
     ReportResult,
+)
+from app.services.conversation import (
+    InvalidRevision,
+    MissingConversation,
+    conversations,
 )
 from app.services.experiment import run_experiment
 
@@ -69,6 +77,16 @@ async def internal_error(request: Request, exc: Exception):
     return error_response(request, 500, "INTERNAL_ERROR", "Internal server error")
 
 
+@app.exception_handler(MissingConversation)
+async def missing_conversation(request: Request, exc: MissingConversation):
+    return error_response(request, 409, "CONTEXT_CONFLICT", "Conversation context is missing")
+
+
+@app.exception_handler(InvalidRevision)
+async def invalid_revision(request: Request, exc: InvalidRevision):
+    return error_response(request, 422, "VALIDATION_ERROR", str(exc))
+
+
 @app.get("/api/v1/health", response_model=APIResponse[dict])
 def health(request: Request):
     return APIResponse(data={"status": "ok"}, request_id=request_id(request))
@@ -81,9 +99,31 @@ def algorithms(request: Request):
 
 @app.post("/api/v1/experiments/run", response_model=APIResponse[ExperimentResult])
 def run(request: Request, config: ExperimentConfig):
+    x_session_id = request.headers.get("X-Session-ID")
+    if x_session_id:
+        conversations.get(x_session_id)
     result = run_experiment(config)
     save_result(result)
+    if x_session_id:
+        conversations.record_run(x_session_id, config, result.run_id)
     return APIResponse(data=result, request_id=request_id(request))
+
+
+@app.post("/api/v1/conversations", response_model=APIResponse[ConversationState])
+def start_conversation(request: Request, body: ConversationStartRequest):
+    return APIResponse(data=conversations.start(body.config), request_id=request_id(request))
+
+
+@app.get("/api/v1/conversations/{session_id}", response_model=APIResponse[ConversationState])
+def get_conversation(request: Request, session_id: str):
+    return APIResponse(data=conversations.get(session_id), request_id=request_id(request))
+
+
+@app.post("/api/v1/conversations/{session_id}/revise",
+          response_model=APIResponse[ConversationState])
+def revise_conversation(request: Request, session_id: str, body: ConversationRevisionRequest):
+    return APIResponse(data=conversations.revise(session_id, body.changes),
+                       request_id=request_id(request))
 
 
 def not_implemented(request: Request):
@@ -111,6 +151,9 @@ def parse(request: Request, body: ParseRequest):
         raise HTTPException(status_code=503, detail="Model service unavailable") from exc
     except ValidationError as exc:
         raise HTTPException(status_code=422, detail="Model returned invalid configuration") from exc
+    state = (conversations.accept_parse(body.session_id, parsed.config)
+             if body.session_id else conversations.start(parsed.config))
+    parsed = parsed.model_copy(update={"session_id": state.session_id})
     return APIResponse(data=parsed, request_id=request_id(request))
 
 
