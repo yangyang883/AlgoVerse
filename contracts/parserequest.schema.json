@@ -18,6 +18,19 @@
       ],
       "default": null,
       "title": "Session Id"
+    },
+    "confirmed_changes": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Confirmed Changes"
     }
   },
   "required": [

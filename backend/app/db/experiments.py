@@ -2,6 +2,7 @@
 import os
 from datetime import timezone
 from pathlib import Path
+from threading import RLock
 
 from sqlalchemy import JSON, Boolean, Column, DateTime, Integer, String, create_engine
 from sqlalchemy.orm import Session, declarative_base
@@ -9,6 +10,9 @@ from sqlalchemy.orm import Session, declarative_base
 from app.schemas.models import ExperimentResult
 
 Base = declarative_base()
+_engine = None
+_engine_path = None
+_engine_lock = RLock()
 
 
 class ExperimentRecord(Base):
@@ -34,13 +38,27 @@ class ExperimentRecord(Base):
 
 
 def database_engine():
+    global _engine, _engine_path
     path = Path(os.getenv("ALGOVERSE_DB_PATH", "algoverse.db")).expanduser().resolve()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    engine = create_engine(
-        f"sqlite:///{path.as_posix()}", connect_args={"check_same_thread": False}
-    )
-    Base.metadata.create_all(engine)
-    return engine
+    with _engine_lock:
+        if _engine is None or _engine_path != path:
+            if _engine is not None:
+                _engine.dispose()
+            path.parent.mkdir(parents=True, exist_ok=True)
+            _engine = create_engine(
+                f"sqlite:///{path.as_posix()}", connect_args={"check_same_thread": False}
+            )
+            Base.metadata.create_all(_engine)
+            _engine_path = path
+        return _engine
+
+
+def dispose_database():
+    global _engine, _engine_path
+    with _engine_lock:
+        if _engine is not None:
+            _engine.dispose()
+        _engine = _engine_path = None
 
 
 def save_result(result: ExperimentResult) -> None:

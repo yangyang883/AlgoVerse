@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request
@@ -7,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
-from app.db.experiments import load_result, save_result
+from app.db.experiments import dispose_database, load_result, save_result
 from app.engine.registry import CAPABILITIES
 from app.schemas.models import (
     APIError,
@@ -26,14 +27,25 @@ from app.schemas.models import (
     ReportResult,
 )
 from app.services.conversation import (
+    ConversationCapacity,
+    ExpiredConversation,
     InvalidRevision,
     MissingConversation,
+    RunConfigConflict,
     conversations,
 )
 from app.services.experiment import run_experiment
 
-app = FastAPI(title="AlgoVerse API", version="0.1.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    dispose_database()
+
+
+app = FastAPI(title="AlgoVerse API", version="0.1.0", lifespan=lifespan)
 logger = logging.getLogger(__name__)
+ERROR_RESPONSES = {status: {"model": APIResponse[dict]} for status in (404, 409, 422, 500, 503, 504)}
 
 
 def request_id(request: Request) -> str:
@@ -82,9 +94,24 @@ async def missing_conversation(request: Request, exc: MissingConversation):
     return error_response(request, 409, "CONTEXT_CONFLICT", "Conversation context is missing")
 
 
+@app.exception_handler(ExpiredConversation)
+async def expired_conversation(request: Request, exc: ExpiredConversation):
+    return error_response(request, 409, "SESSION_EXPIRED", "Conversation has expired")
+
+
+@app.exception_handler(ConversationCapacity)
+async def session_capacity(request: Request, exc: ConversationCapacity):
+    return error_response(request, 503, "SESSION_CAPACITY", "Conversation capacity reached")
+
+
 @app.exception_handler(InvalidRevision)
 async def invalid_revision(request: Request, exc: InvalidRevision):
     return error_response(request, 422, "VALIDATION_ERROR", str(exc))
+
+
+@app.exception_handler(RunConfigConflict)
+async def run_config_conflict(request: Request, exc: RunConfigConflict):
+    return error_response(request, 409, "CONFIG_CONFLICT", str(exc))
 
 
 @app.get("/api/v1/health", response_model=APIResponse[dict])
@@ -97,11 +124,12 @@ def algorithms(request: Request):
     return APIResponse(data=CAPABILITIES, request_id=request_id(request))
 
 
-@app.post("/api/v1/experiments/run", response_model=APIResponse[ExperimentResult])
+@app.post("/api/v1/experiments/run", response_model=APIResponse[ExperimentResult],
+          responses=ERROR_RESPONSES)
 def run(request: Request, config: ExperimentConfig):
     x_session_id = request.headers.get("X-Session-ID")
     if x_session_id:
-        conversations.get(x_session_id)
+        conversations.assert_config(x_session_id, config)
     result = run_experiment(config)
     save_result(result)
     if x_session_id:
@@ -109,18 +137,20 @@ def run(request: Request, config: ExperimentConfig):
     return APIResponse(data=result, request_id=request_id(request))
 
 
-@app.post("/api/v1/conversations", response_model=APIResponse[ConversationState])
+@app.post("/api/v1/conversations", response_model=APIResponse[ConversationState],
+          responses=ERROR_RESPONSES)
 def start_conversation(request: Request, body: ConversationStartRequest):
     return APIResponse(data=conversations.start(body.config), request_id=request_id(request))
 
 
-@app.get("/api/v1/conversations/{session_id}", response_model=APIResponse[ConversationState])
+@app.get("/api/v1/conversations/{session_id}", response_model=APIResponse[ConversationState],
+         responses=ERROR_RESPONSES)
 def get_conversation(request: Request, session_id: str):
     return APIResponse(data=conversations.get(session_id), request_id=request_id(request))
 
 
 @app.post("/api/v1/conversations/{session_id}/revise",
-          response_model=APIResponse[ConversationState])
+          response_model=APIResponse[ConversationState], responses=ERROR_RESPONSES)
 def revise_conversation(request: Request, session_id: str, body: ConversationRevisionRequest):
     return APIResponse(data=conversations.revise(session_id, body.changes),
                        request_id=request_id(request))
@@ -138,7 +168,8 @@ def chat(request: Request, body: ChatRequest):
     return not_implemented(request)
 
 
-@app.post("/api/v1/experiments/parse", response_model=APIResponse[ParseResult])
+@app.post("/api/v1/experiments/parse", response_model=APIResponse[ParseResult],
+          responses=ERROR_RESPONSES)
 def parse(request: Request, body: ParseRequest):
     provider = getattr(app.state, "parse_provider", None)
     if provider is None:
@@ -151,7 +182,7 @@ def parse(request: Request, body: ParseRequest):
         raise HTTPException(status_code=503, detail="Model service unavailable") from exc
     except ValidationError as exc:
         raise HTTPException(status_code=422, detail="Model returned invalid configuration") from exc
-    state = (conversations.accept_parse(body.session_id, parsed.config)
+    state = (conversations.accept_parse(body.session_id, parsed.config, body.confirmed_changes)
              if body.session_id else conversations.start(parsed.config))
     parsed = parsed.model_copy(update={"session_id": state.session_id})
     return APIResponse(data=parsed, request_id=request_id(request))
@@ -162,7 +193,8 @@ def compare(request: Request, body: CompareRequest):
     return not_implemented(request)
 
 
-@app.get("/api/v1/experiments/{run_id}", response_model=APIResponse[ExperimentResult])
+@app.get("/api/v1/experiments/{run_id}", response_model=APIResponse[ExperimentResult],
+         responses=ERROR_RESPONSES)
 def get_experiment(request: Request, run_id: str):
     result = load_result(run_id)
     if result is None:

@@ -20,3 +20,6 @@ pythonpath = ["."]
 [tool.ruff]
 line-length = 100
 target-version = "py39"
+
+[tool.ruff.lint.per-file-ignores]
+"app/schemas/models.py" = ["UP045"] # Python 3.9 Pydantic needs Optional at runtime.

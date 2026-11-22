@@ -31,3 +31,15 @@ Schema 的 32 项是已有类型注解风格问题；批量改写可能影响生
 ## 实际测试
 
 在可运行 Windows asyncio 的正常执行环境中执行 `python -m pytest -q`：**18 passed，0 failed，0 skipped**。`python scripts/export_contracts.py --check` 与 `python -m ruff check backend/app/main.py backend/app/services/conversation.py backend/tests/conftest.py backend/tests/test_conversation.py scripts/export_contracts.py`：均通过。`npm run build`：通过，仅有包体积提示。测试覆盖会话创建、字段保留、最近 run_id、缺上下文 409、非法算法 422、Mock 不能指定历史会话、显式数组与规模冲突。真实 Qwen 测试仍未执行。
+
+## 独立审查修复（本节覆盖以上阶段性数字与行为）
+
+已有会话的 `/parse` 不再使用 Provider 的完整配置覆盖历史状态。调用者须在 `ParseRequest.confirmed_changes` 提交用户明确确认的字段；后端检查 Provider 的候选字段值后，只对原有配置应用这些字段。没有可靠字段级信息返回 409，未知字段返回 422。组员 1 应提供字段级修订建议及用户确认流程；不能把完整配置差异自动视为用户意图。Provider 仍只需返回兼容的 `ParseResult`，`session_id` 由后端管理。
+
+关联会话的 `/run` 先比较提交配置与已确认配置，不同则返回 409 `CONFIG_CONFLICT`，不执行、不保存、不更新状态；成功保存后仅更新 `last_run_id`。无会话 run 保持可用。会话默认 TTL 1800 秒、容量 100，分别由 `ALGOVERSE_SESSION_TTL_SECONDS`、`ALGOVERSE_MAX_SESSIONS` 配置；容量满返回 503，过期返回 409 `SESSION_EXPIRED`。这满足课程单 Worker 演示，重启后会话消失，多 Worker 不共享，长期部署需持久化。
+
+SQLite Engine 按数据库路径复用，建表仅在首次创建 Engine 时执行；每次操作单独创建并关闭 Session，测试结束和应用关闭时可 dispose。测试数据库路径独立。公共 Schema 只调整类型注解与导入，不改变原字段语义；为兼容 Python 3.9 的 Pydantic，`Optional` 使用有说明的 Ruff `UP045` 例外。剩余 Ruff 8 项均在组员 2：`engine/registry.py` I001 ×1；`engine/sorting/bubble.py` UP035 ×2、UP006 ×5。建议组员 2 整理导入并将 `List`/`Tuple` 注解换为内建泛型，先确认 Python 3.9 兼容性。本次未改写其业务文件。
+
+全后端 Ruff 仍有 8 项，**未通过**。契约生成和前端类型/构建须以本次最终执行记录为准。真实 Qwen、四排序和 RAG 仍缺组员 1、2 的交付；Mock 测试不是模型联调通过。
+
+最终本地验证：`python -m pytest -q` 为 **23 passed、0 skipped**；`python scripts/export_contracts.py --check` 通过；`npm run typecheck`、`npm run build` 通过。全后端 Ruff 仍为上述 8 项组员 2 文件问题，未计为通过。受限执行窗口的最小 `asyncio.run(asyncio.sleep(0))` 会卡住；正常 Windows 执行环境中完整 pytest 通过。CI 未实际运行，不能声称 CI 通过。

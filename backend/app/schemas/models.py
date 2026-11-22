@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from datetime import datetime
-from typing import Any, Dict, Generic, List, Literal, Optional, TypeVar
+from typing import Any, Generic, Literal, Optional, TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -12,7 +14,7 @@ class ExperimentInput(StrictModel):
     size: int = Field(default=20, ge=0, le=2000)
     distribution: Literal["random", "sorted", "reversed"] = "random"
     seed: int = 42
-    values: Optional[List[int]] = None
+    values: Optional[list[int]] = None
 
     @model_validator(mode="after")
     def check_values(self):
@@ -32,9 +34,9 @@ class ExperimentConfig(StrictModel):
     algorithm: Literal["bubble_sort"] = "bubble_sort"
     mode: Literal["experiment"] = "experiment"
     input: ExperimentInput = Field(default_factory=ExperimentInput)
-    parameters: Dict[str, Any] = Field(default_factory=dict)
+    parameters: dict[str, Any] = Field(default_factory=dict)
     visualization: Visualization = Field(default_factory=Visualization)
-    metrics: List[Literal["comparisons", "swaps", "elapsed_ms"]] = Field(
+    metrics: list[Literal["comparisons", "swaps", "elapsed_ms"]] = Field(
         default_factory=lambda: ["comparisons", "swaps", "elapsed_ms"]
     )
 
@@ -50,9 +52,9 @@ class ExperimentConfig(StrictModel):
 class TraceEvent(StrictModel):
     step: int = Field(ge=0)
     type: Literal["initial", "compare", "swap", "write", "pivot", "complete"]
-    indices: List[int] = Field(default_factory=list)
-    array: Optional[List[int]] = None
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    indices: list[int] = Field(default_factory=list)
+    array: Optional[list[int]] = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class ValidationResult(StrictModel):
@@ -64,11 +66,11 @@ class ExperimentResult(StrictModel):
     run_id: str
     status: Literal["completed", "failed"]
     config: ExperimentConfig
-    input: List[int]
-    output: List[int]
-    metrics: Dict[str, float]
+    input: list[int]
+    output: list[int]
+    metrics: dict[str, float]
     validation: ValidationResult
-    trace: List[TraceEvent]
+    trace: list[TraceEvent]
     trace_truncated: bool
     created_at: datetime
 
@@ -87,7 +89,7 @@ class ConversationState(StrictModel):
     last_config: Optional[ExperimentConfig] = None
     last_run_id: Optional[str] = None
     summary: str = ""
-    modified_fields: List[str] = Field(default_factory=list)
+    modified_fields: list[str] = Field(default_factory=list)
 
 
 class ConversationStartRequest(StrictModel):
@@ -95,13 +97,13 @@ class ConversationStartRequest(StrictModel):
 
 
 class ConversationRevisionRequest(StrictModel):
-    changes: Dict[str, Any] = Field(min_length=1)
+    changes: dict[str, Any] = Field(min_length=1)
 
 
 class APIError(StrictModel):
     code: str
     message: str
-    details: Optional[Dict[str, Any]] = None
+    details: Optional[dict[str, Any]] = None
 
 
 T = TypeVar("T")
@@ -116,6 +118,7 @@ class APIResponse(BaseModel, Generic[T]):
 class ParseRequest(StrictModel):
     text: str = Field(min_length=1, max_length=2000)
     session_id: Optional[str] = None
+    confirmed_changes: Optional[dict[str, Any]] = None
 
 
 class ParseResult(StrictModel):
@@ -133,20 +136,20 @@ class ChatRequest(StrictModel):
 class ChatResult(StrictModel):
     session_id: str
     answer: str
-    sources: List[str] = Field(default_factory=list)
+    sources: list[str] = Field(default_factory=list)
     state: ConversationState
 
 
 class CompareRequest(StrictModel):
-    run_ids: List[str] = Field(min_length=2)
+    run_ids: list[str] = Field(min_length=2)
 
 
 class CompareResult(StrictModel):
-    runs: List[ExperimentResult]
+    runs: list[ExperimentResult]
     same_input: bool
 
 
 class ReportResult(StrictModel):
     run: ExperimentResult
     explanation: Optional[str] = None
-    limitations: List[str] = Field(default_factory=list)
+    limitations: list[str] = Field(default_factory=list)
