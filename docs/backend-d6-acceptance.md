@@ -43,3 +43,9 @@ SQLite Engine 按数据库路径复用，建表仅在首次创建 Engine 时执�
 全后端 Ruff 仍有 8 项，**未通过**。契约生成和前端类型/构建须以本次最终执行记录为准。真实 Qwen、四排序和 RAG 仍缺组员 1、2 的交付；Mock 测试不是模型联调通过。
 
 最终本地验证：`python -m pytest -q` 为 **24 passed、0 skipped**，包括有限并发的多会话隔离测试；`python scripts/export_contracts.py --check` 通过；`npm run typecheck`、`npm run build` 通过。全后端 Ruff 仍为上述 8 项组员 2 文件问题，未计为通过。受限执行窗口的最小 `asyncio.run(asyncio.sleep(0))` 会卡住；正常 Windows 执行环境中完整 pytest 通过。CI 未实际运行，不能声称 CI 通过。
+
+### `/parse` 响应与同会话并发修复
+
+`/parse` 对已有会话应用确认字段后，响应 `config` 现在取后端 `state.last_config`，避免响应中仍带 Provider 未确认的字段。回归用例中原 seed 42、Provider 给 seed 999、只确认 size 30：响应和会话均为 size 30/seed 42；直接把响应配置传给带 `X-Session-ID` 的 `/run` 成功并更新 `last_run_id`。
+
+关联会话的配置检查、执行、SQLite 保存、最近 run_id 记录现在与 `revise` 共用会话服务锁；同会话修订会等待运行完成。正常 Windows 环境依次执行：`python -m pytest -q` **25 passed**；`python scripts/export_contracts.py --check` 通过；全后端 Ruff 仍为组员 2 的 **8 项**，未通过。真实 Qwen 与其他三种排序未交付，D6 全部要求及 D7 闸门均未宣称通过。

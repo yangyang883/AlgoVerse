@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
+from threading import Event
 
 import pytest
 from fastapi.testclient import TestClient
@@ -34,11 +35,20 @@ def test_provider_extra_fields_never_override_session():
             })
             assert confirmed.status_code == 200
             assert confirmed.json()["data"]["session_id"] == session_id
+            assert confirmed.json()["data"]["config"]["input"] == {
+                "size": 30, "distribution": "random", "seed": 42, "values": None,
+            }
             state = client.get(f"/api/v1/conversations/{session_id}").json()["data"]
             assert state["last_config"]["input"] == {
                 "size": 30, "distribution": "random", "seed": 42, "values": None,
             }
             assert state["modified_fields"] == ["input.size"]
+            run = client.post("/api/v1/experiments/run",
+                              json=confirmed.json()["data"]["config"],
+                              headers={"X-Session-ID": session_id})
+            assert run.status_code == 200
+            state = client.get(f"/api/v1/conversations/{session_id}").json()["data"]
+            assert state["last_run_id"] == run.json()["data"]["run_id"]
             bad = client.post("/api/v1/experiments/parse", json={
                 "text": "change", "session_id": session_id,
                 "confirmed_changes": {"input.seed": 12},
@@ -117,3 +127,34 @@ def test_concurrent_sessions_remain_isolated():
     assert len({state.session_id for state in states}) == 8
     assert all(service.get(state.session_id).last_config.input.seed == seed
                for seed, state in enumerate(states))
+
+
+def test_revision_waits_for_same_session_run(monkeypatch):
+    from app import main
+
+    entered, release = Event(), Event()
+    real_run = main.run_experiment
+
+    def slow_run(config):
+        entered.set()
+        assert release.wait(5)
+        return real_run(config)
+
+    monkeypatch.setattr(main, "run_experiment", slow_run)
+    with TestClient(app) as client:
+        config = {"input": {"size": 20, "seed": 42}}
+        session_id = client.post("/api/v1/conversations", json={"config": config}).json()[
+            "data"]["session_id"]
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            run = pool.submit(client.post, "/api/v1/experiments/run", json=config,
+                              headers={"X-Session-ID": session_id})
+            assert entered.wait(5)
+            revise = pool.submit(client.post, f"/api/v1/conversations/{session_id}/revise",
+                                 json={"changes": {"input.size": 30}})
+            assert not revise.done()
+            release.set()
+            assert run.result(timeout=5).status_code == 200
+            assert revise.result(timeout=5).status_code == 200
+        state = client.get(f"/api/v1/conversations/{session_id}").json()["data"]
+        assert state["last_config"]["input"]["size"] == 30
+        assert state["last_run_id"]

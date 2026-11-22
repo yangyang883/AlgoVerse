@@ -128,12 +128,13 @@ def algorithms(request: Request):
           responses=ERROR_RESPONSES)
 def run(request: Request, config: ExperimentConfig):
     x_session_id = request.headers.get("X-Session-ID")
-    if x_session_id:
-        conversations.assert_config(x_session_id, config)
-    result = run_experiment(config)
-    save_result(result)
-    if x_session_id:
-        conversations.record_run(x_session_id, config, result.run_id)
+
+    def execute():
+        result = run_experiment(config)
+        save_result(result)
+        return result
+
+    result = conversations.execute_run(x_session_id, config, execute) if x_session_id else execute()
     return APIResponse(data=result, request_id=request_id(request))
 
 
@@ -184,7 +185,7 @@ def parse(request: Request, body: ParseRequest):
         raise HTTPException(status_code=422, detail="Model returned invalid configuration") from exc
     state = (conversations.accept_parse(body.session_id, parsed.config, body.confirmed_changes)
              if body.session_id else conversations.start(parsed.config))
-    parsed = parsed.model_copy(update={"session_id": state.session_id})
+    parsed = parsed.model_copy(update={"session_id": state.session_id, "config": state.last_config})
     return APIResponse(data=parsed, request_id=request_id(request))
 
 

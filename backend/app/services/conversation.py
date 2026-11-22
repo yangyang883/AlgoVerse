@@ -111,11 +111,14 @@ class ConversationService:
             if state.last_config != config:
                 raise RunConfigConflict("Run config differs from confirmed conversation config")
 
-    def record_run(self, session_id: str, config: ExperimentConfig, run_id: str) -> None:
+    def execute_run(self, session_id: str, config: ExperimentConfig, execute):
+        """Keep validation, execution, persistence and state update atomic to revisions."""
         with self._lock:
             self.assert_config(session_id, config)
+            result = execute()
             state = self._active(session_id)
-            self._store(state.model_copy(update={"last_run_id": run_id}, deep=True))
+            self._store(state.model_copy(update={"last_run_id": result.run_id}, deep=True))
+            return result
 
     def accept_parse(self, session_id: str, config: ExperimentConfig,
                      confirmed_changes: dict) -> ConversationState:
