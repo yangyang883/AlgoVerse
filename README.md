@@ -42,7 +42,7 @@ cd frontend
 npm run build
 ```
 
-契约源是 `backend/app/schemas/models.py`，生成文件位于 `contracts/` 和 `frontend/src/types/contracts.ts`。接口状态与异常见 `docs/api-contracts.md`。
+契约源是 `backend/app/schemas/models.py`，生成文件位于 `contracts/` 和 `frontend/src/types/contracts.ts`。接口状态与异常见 `docs/api-contracts.md`；评测对接的实际字段和请求示例见 `docs/backend-evaluation-handoff.md`。
 
 ## 协作与进度
 
@@ -50,4 +50,4 @@ npm run build
 
 ## 当前 API
 
-`POST /api/v1/conversations` 创建会话；`GET /api/v1/conversations/{session_id}` 查询；`POST /api/v1/conversations/{session_id}/revise` 修订明示字段。`POST /api/v1/experiments/run` 运行并保存；`GET /api/v1/experiments/{run_id}` 查询结果。`POST /api/v1/experiments/parse` 等待组员 1 Provider，现仅 Mock 测试通过。已有会话解析须传 `confirmed_changes`；关联会话的运行配置须与已确认配置一致。会话默认 30 分钟过期、最多 100 个；演示使用单 Worker。错误统一返回 `data/error/request_id`。详见 `docs/api-contracts.md`。
+`POST /api/v1/conversations` 创建会话；`GET /api/v1/conversations/{session_id}` 查询；`POST /api/v1/conversations/{session_id}/revise` 修订明示字段。`POST /api/v1/experiments/run` 运行并保存；`GET /api/v1/experiments/{run_id}` 查询结果；`POST /api/v1/experiments/compare` 对照相同实际输入的已保存运行。`POST /api/v1/experiments/parse` 等待组员 1 Provider，现仅 Mock 测试通过。已有会话解析须传 `confirmed_changes`；关联会话的运行配置须与已确认配置一致。会话默认 30 分钟过期、最多 100 个；演示使用单 Worker。错误统一返回 `data/error/request_id`。详见 `docs/backend-evaluation-handoff.md`。

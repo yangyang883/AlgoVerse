@@ -214,16 +214,23 @@ def parse(request: Request, body: ParseRequest):
     except ConnectionError as exc:
         raise HTTPException(status_code=503, detail="Model service unavailable") from exc
     except ValidationError as exc:
-        raise HTTPException(status_code=422, detail="Model returned invalid configuration") from exc
+        return error_response(request, 422, "VALIDATION_ERROR", "Model returned invalid configuration",
+                              {"errors": jsonable_encoder(exc.errors())})
     state = (conversations.accept_parse(body.session_id, parsed.config, body.confirmed_changes)
              if body.session_id else conversations.start(parsed.config))
     parsed = parsed.model_copy(update={"session_id": state.session_id, "config": state.last_config})
     return APIResponse(data=parsed, request_id=request_id(request))
 
 
-@app.post("/api/v1/experiments/compare", response_model=APIResponse[CompareResult])
+@app.post("/api/v1/experiments/compare", response_model=APIResponse[CompareResult],
+          responses=ERROR_RESPONSES)
 def compare(request: Request, body: CompareRequest):
-    return not_implemented(request)
+    runs = [load_result(run_id) for run_id in body.run_ids]
+    if any(run is None for run in runs):
+        raise HTTPException(status_code=404, detail="Experiment not found")
+    if any(run.input != runs[0].input for run in runs[1:]):
+        raise HTTPException(status_code=409, detail="Experiments must use the same input")
+    return APIResponse(data=CompareResult(runs=runs, same_input=True), request_id=request_id(request))
 
 
 @app.get("/api/v1/experiments/{run_id}", response_model=APIResponse[ExperimentResult],
