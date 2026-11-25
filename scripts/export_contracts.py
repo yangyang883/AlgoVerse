@@ -9,11 +9,28 @@ sys.path.insert(0, str(ROOT / "backend"))
 
 from app.main import app
 from app.schemas.models import (
-    APIError, APIResponse, AlgorithmCapability, ConversationState, ExperimentConfig,
-    ExperimentResult, TraceEvent,
+    AlgorithmCapability,
+    APIError,
+    APIResponse,
+    ConversationRevisionRequest,
+    ConversationStartRequest,
+    ConversationState,
+    EvidencePlan,
+    EvidenceReport,
+    ExperimentConfig,
+    ExperimentHypothesis,
+    ExperimentPlanRequest,
+    ExperimentResult,
+    ParseRequest,
+    ParseResult,
+    TraceEvent,
 )
 
-MODELS = [ExperimentConfig, ExperimentResult, TraceEvent, AlgorithmCapability, ConversationState, APIError]
+MODELS = [
+    ExperimentConfig, ExperimentResult, TraceEvent, AlgorithmCapability, ConversationState,
+    ConversationStartRequest, ConversationRevisionRequest, ParseRequest, ParseResult, APIError,
+    ExperimentHypothesis, ExperimentPlanRequest, EvidencePlan, EvidenceReport,
+]
 NAMES = {"ExperimentConfig": "experiment", "ExperimentResult": "result", "TraceEvent": "trace"}
 
 

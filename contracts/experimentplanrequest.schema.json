@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "hypothesis": {
+      "$ref": "#/$defs/ExperimentHypothesis"
+    },
+    "experiment_type": {
+      "enum": [
+        "distribution_effect",
+        "same_input_comparison"
+      ],
+      "title": "Experiment Type",
+      "type": "string"
+    },
+    "configurations": {
+      "items": {
+        "$ref": "#/$defs/ExperimentConfig"
+      },
+      "maxItems": 10,
+      "minItems": 2,
+      "title": "Configurations",
+      "type": "array"
+    },
+    "repetitions": {
+      "default": 1,
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Repetitions",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "hypothesis",
+    "experiment_type",
+    "configurations"
+  ],
+  "title": "ExperimentPlanRequest",
+  "type": "object"
+}

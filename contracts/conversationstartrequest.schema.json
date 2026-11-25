@@ -1,0 +1,13 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "config": {
+      "$ref": "#/$defs/ExperimentConfig"
+    }
+  },
+  "required": [
+    "config"
+  ],
+  "title": "ConversationStartRequest",
+  "type": "object"
+}

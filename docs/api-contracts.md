@@ -13,3 +13,9 @@
 | GET `/experiments/{id}/report` | UUID 路径 | `ReportResult` / 200 | 未找到 404 | 待实现 |
 
 联调 Mock 示例：`{"data":{"config":{"schema_version":"1.0","algorithm":"bubble_sort","mode":"experiment","input":{"size":3,"distribution":"random","seed":42,"values":[3,1,2]},"parameters":{},"visualization":{"enabled":true},"metrics":["comparisons","swaps","elapsed_ms"]},"source":"mock","requires_confirmation":true},"error":null,"request_id":"mock-request"}`。运行接口使用真实数据，不使用 Mock。D2 如要让快速排序配置通过，应先扩展能力注册表、Pydantic 枚举和前端生成类型，并增加对应测试。
+
+## D6 当前接口状态（覆盖上方 D1 状态表）
+
+已实现：`GET /health`、`GET /algorithms`、`POST /experiments/run`、`GET /experiments/{run_id}`，以及会话创建 `POST /conversations`、查询 `GET /conversations/{session_id}`、修订 `POST /conversations/{session_id}/revise`；路径均加 `/api/v1` 前缀。`POST /experiments/parse` 仅有 Provider 接口，未接真实 Qwen；无 Provider 返回 501。`/chat`、`/compare`、`/report` 仍为 501。
+
+已有会话解析请求须携带 `session_id` 和用户确认的 `confirmed_changes` 字段映射，例如 `{"text":"把规模改成 30","session_id":"...","confirmed_changes":{"input.size":30}}`。Provider 完整配置只用于校验候选字段；后端从最后合法配置应用明示变更，其他字段不继承 Provider 的改动。缺字段级确认返回 409。关联会话运行使用 `X-Session-ID`，配置与已确认版本不同返回 409 `CONFIG_CONFLICT`。错误封套及 request_id 在 OpenAPI 响应中声明。
