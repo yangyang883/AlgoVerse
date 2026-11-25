@@ -1,15 +1,13 @@
-from typing import List, Tuple
-
 from app.schemas.models import TraceEvent
 
 
-def bubble_sort(values: List[int], trace_limit: int = 5000) -> Tuple[List[int], int, int, List[TraceEvent], bool]:
+def bubble_sort(values: list[int], trace_limit: int = 5000) -> tuple[list[int], int, int, list[TraceEvent], bool]:
     result = values.copy()
     trace = [TraceEvent(step=0, type="initial", array=result.copy())] if trace_limit else []
     comparisons = swaps = 0
     truncated = False
 
-    def record(kind: str, indices: List[int]) -> None:
+    def record(kind: str, indices: list[int]) -> None:
         nonlocal truncated
         if not trace_limit:
             return
