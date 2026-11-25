@@ -15,7 +15,11 @@ from app.schemas.models import (
     ConversationRevisionRequest,
     ConversationStartRequest,
     ConversationState,
+    EvidencePlan,
+    EvidenceReport,
     ExperimentConfig,
+    ExperimentHypothesis,
+    ExperimentPlanRequest,
     ExperimentResult,
     ParseRequest,
     ParseResult,
@@ -25,6 +29,7 @@ from app.schemas.models import (
 MODELS = [
     ExperimentConfig, ExperimentResult, TraceEvent, AlgorithmCapability, ConversationState,
     ConversationStartRequest, ConversationRevisionRequest, ParseRequest, ParseResult, APIError,
+    ExperimentHypothesis, ExperimentPlanRequest, EvidencePlan, EvidenceReport,
 ]
 NAMES = {"ExperimentConfig": "experiment", "ExperimentResult": "result", "TraceEvent": "trace"}
 

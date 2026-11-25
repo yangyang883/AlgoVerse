@@ -1,0 +1,84 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "evidence_id": {
+      "title": "Evidence Id",
+      "type": "string"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "run_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Run Ids",
+      "type": "array"
+    },
+    "input_fingerprints": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Input Fingerprints",
+      "type": "array"
+    },
+    "observed_metrics": {
+      "items": {
+        "additionalProperties": {
+          "type": "number"
+        },
+        "type": "object"
+      },
+      "title": "Observed Metrics",
+      "type": "array"
+    },
+    "validation_results": {
+      "items": {
+        "$ref": "#/$defs/ValidationResult"
+      },
+      "title": "Validation Results",
+      "type": "array"
+    },
+    "comparison_validity": {
+      "title": "Comparison Validity",
+      "type": "boolean"
+    },
+    "reproducibility_metadata": {
+      "additionalProperties": true,
+      "title": "Reproducibility Metadata",
+      "type": "object"
+    },
+    "conclusion": {
+      "title": "Conclusion",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "evidence_id",
+    "plan_id",
+    "run_ids",
+    "input_fingerprints",
+    "observed_metrics",
+    "validation_results",
+    "comparison_validity",
+    "reproducibility_metadata",
+    "conclusion",
+    "limitations",
+    "created_at"
+  ],
+  "title": "EvidenceReport",
+  "type": "object"
+}

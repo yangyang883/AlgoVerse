@@ -153,3 +153,38 @@ class ReportResult(StrictModel):
     run: ExperimentResult
     explanation: Optional[str] = None
     limitations: list[str] = Field(default_factory=list)
+
+
+class ExperimentHypothesis(StrictModel):
+    hypothesis_id: str
+    hypothesis_type: Literal["distribution_effect", "same_input_comparison"]
+    question: str = Field(min_length=1)
+    assumptions: list[str] = Field(default_factory=list)
+    expected_observation: str = Field(min_length=1)
+
+
+class ExperimentPlanRequest(StrictModel):
+    hypothesis: ExperimentHypothesis
+    experiment_type: Literal["distribution_effect", "same_input_comparison"]
+    configurations: list[ExperimentConfig] = Field(min_length=2, max_length=10)
+    repetitions: int = Field(default=1, ge=1, le=10)
+
+
+class EvidencePlan(ExperimentPlanRequest):
+    plan_id: str
+    status: Literal["validated", "completed", "failed"] = "validated"
+    created_at: datetime
+
+
+class EvidenceReport(StrictModel):
+    evidence_id: str
+    plan_id: str
+    run_ids: list[str]
+    input_fingerprints: list[str]
+    observed_metrics: list[dict[str, float]]
+    validation_results: list[ValidationResult]
+    comparison_validity: bool
+    reproducibility_metadata: dict[str, Any]
+    conclusion: str
+    limitations: list[str]
+    created_at: datetime

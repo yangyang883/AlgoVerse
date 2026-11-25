@@ -20,7 +20,10 @@ from app.schemas.models import (
     ConversationRevisionRequest,
     ConversationStartRequest,
     ConversationState,
+    EvidencePlan,
+    EvidenceReport,
     ExperimentConfig,
+    ExperimentPlanRequest,
     ExperimentResult,
     ParseRequest,
     ParseResult,
@@ -34,6 +37,7 @@ from app.services.conversation import (
     RunConfigConflict,
     conversations,
 )
+from app.services.evidence_lab import create_plan, execute_plan, load_report
 from app.services.experiment import run_experiment
 
 
@@ -122,6 +126,34 @@ def health(request: Request):
 @app.get("/api/v1/algorithms", response_model=APIResponse[list])
 def algorithms(request: Request):
     return APIResponse(data=CAPABILITIES, request_id=request_id(request))
+
+
+@app.post("/api/v1/evidence/plans", response_model=APIResponse[EvidencePlan], responses=ERROR_RESPONSES)
+def post_evidence_plan(request: Request, body: ExperimentPlanRequest):
+    try:
+        plan = create_plan(body)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return APIResponse(data=plan, request_id=request_id(request))
+
+
+@app.post("/api/v1/evidence/plans/{plan_id}/run", response_model=APIResponse[EvidenceReport], responses=ERROR_RESPONSES)
+def run_evidence_plan(request: Request, plan_id: str):
+    try:
+        report = execute_plan(plan_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    if report is None:
+        raise HTTPException(status_code=404, detail="Evidence plan not found")
+    return APIResponse(data=report, request_id=request_id(request))
+
+
+@app.get("/api/v1/evidence/reports/{evidence_id}", response_model=APIResponse[EvidenceReport], responses=ERROR_RESPONSES)
+def get_evidence_report(request: Request, evidence_id: str):
+    report = load_report(evidence_id)
+    if report is None:
+        raise HTTPException(status_code=404, detail="Evidence report not found")
+    return APIResponse(data=report, request_id=request_id(request))
 
 
 @app.post("/api/v1/experiments/run", response_model=APIResponse[ExperimentResult],
