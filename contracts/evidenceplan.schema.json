@@ -36,6 +36,7 @@
       "default": "validated",
       "enum": [
         "validated",
+        "running",
         "completed",
         "failed"
       ],

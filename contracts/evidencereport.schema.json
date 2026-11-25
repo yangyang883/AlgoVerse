@@ -44,6 +44,43 @@
       "title": "Comparison Validity",
       "type": "boolean"
     },
+    "comparison_status": {
+      "default": "not_comparable",
+      "enum": [
+        "comparable",
+        "partially_comparable",
+        "not_comparable"
+      ],
+      "title": "Comparison Status",
+      "type": "string"
+    },
+    "comparison_reasons": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Comparison Reasons",
+      "type": "array"
+    },
+    "comparable_metrics": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Comparable Metrics",
+      "type": "array"
+    },
+    "errors": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Errors",
+      "type": "array"
+    },
+    "retryable": {
+      "default": false,
+      "title": "Retryable",
+      "type": "boolean"
+    },
     "reproducibility_metadata": {
       "additionalProperties": true,
       "title": "Reproducibility Metadata",

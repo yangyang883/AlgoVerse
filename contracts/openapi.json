@@ -1662,6 +1662,7 @@
             "type": "string",
             "enum": [
               "validated",
+              "running",
               "completed",
               "failed"
             ],
@@ -1722,6 +1723,7 @@
             "type": "string",
             "enum": [
               "validated",
+              "running",
               "completed",
               "failed"
             ],
@@ -1789,6 +1791,43 @@
           "comparison_validity": {
             "type": "boolean",
             "title": "Comparison Validity"
+          },
+          "comparison_status": {
+            "type": "string",
+            "enum": [
+              "comparable",
+              "partially_comparable",
+              "not_comparable"
+            ],
+            "title": "Comparison Status",
+            "default": "not_comparable"
+          },
+          "comparison_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Comparison Reasons"
+          },
+          "comparable_metrics": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Comparable Metrics"
+          },
+          "errors": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Errors"
+          },
+          "retryable": {
+            "type": "boolean",
+            "title": "Retryable",
+            "default": false
           },
           "reproducibility_metadata": {
             "additionalProperties": true,

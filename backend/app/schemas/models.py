@@ -172,7 +172,7 @@ class ExperimentPlanRequest(StrictModel):
 
 class EvidencePlan(ExperimentPlanRequest):
     plan_id: str
-    status: Literal["validated", "completed", "failed"] = "validated"
+    status: Literal["validated", "running", "completed", "failed"] = "validated"
     created_at: datetime
 
 
@@ -184,6 +184,11 @@ class EvidenceReport(StrictModel):
     observed_metrics: list[dict[str, float]]
     validation_results: list[ValidationResult]
     comparison_validity: bool
+    comparison_status: Literal["comparable", "partially_comparable", "not_comparable"] = "not_comparable"
+    comparison_reasons: list[str] = Field(default_factory=list)
+    comparable_metrics: list[str] = Field(default_factory=list)
+    errors: list[dict[str, Any]] = Field(default_factory=list)
+    retryable: bool = False
     reproducibility_metadata: dict[str, Any]
     conclusion: str
     limitations: list[str]

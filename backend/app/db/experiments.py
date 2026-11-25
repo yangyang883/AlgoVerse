@@ -1,5 +1,6 @@
 """SQLite storage for completed experiment runs."""
 import os
+import platform
 from datetime import timezone
 from pathlib import Path
 from threading import RLock
@@ -62,8 +63,6 @@ def dispose_database():
 
 
 def save_result(result: ExperimentResult) -> None:
-    import platform
-
     record = ExperimentRecord(
         run_id=result.run_id, algorithm=result.config.algorithm,
         experiment_config=result.config.model_dump(mode="json"), input_data=result.input,
@@ -73,7 +72,12 @@ def save_result(result: ExperimentResult) -> None:
         trace_truncated=result.trace_truncated, seed=result.config.input.seed,
         algorithm_version="bubble_sort:v1", model_version=None, prompt_version=None,
         knowledge_version=None,
-        execution_environment={"python": platform.python_version()},
+        execution_environment={"python": platform.python_version(), "machine": platform.machine(),
+                               "system": platform.system(), "processor": platform.processor(),
+                               "timer": "time.perf_counter", "execution_mode": "in_process",
+                               "metric_definitions": {"comparisons": "bubble_sort:v1 comparisons",
+                                                      "swaps": "bubble_sort:v1 swaps",
+                                                      "elapsed_ms": "time.perf_counter milliseconds"}},
         status=result.status, created_at=result.created_at,
     )
     with Session(database_engine()) as session, session.begin():
