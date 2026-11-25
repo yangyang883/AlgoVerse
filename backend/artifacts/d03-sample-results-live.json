@@ -1,0 +1,755 @@
+{
+  "generated_at": "2026-11-25T05:42:49.525852+00:00",
+  "mode": "REAL QWEN CALL — 模型输出来自真实 API",
+  "model": "qwen-flash",
+  "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "note": "期望值取自 D01 样例，未做任何修改；失败项如实保留",
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0
+  },
+  "results": [
+    {
+      "id": "CFG-01",
+      "text": "用冒泡排序处理 20 个随机数，seed 设成 7",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "size": 20,
+        "distribution": "random",
+        "seed": 7,
+        "visualization.enabled": true
+      },
+      "actual_status": "ok",
+      "actual_error_code": null,
+      "config": {
+        "schema_version": "1.0",
+        "algorithm": "bubble_sort",
+        "mode": "experiment",
+        "input": {
+          "size": 20,
+          "distribution": "random",
+          "seed": 7,
+          "values": null
+        },
+        "parameters": {},
+        "visualization": {
+          "enabled": true
+        },
+        "metrics": [
+          "comparisons",
+          "swaps",
+          "elapsed_ms"
+        ]
+      },
+      "repair": {
+        "attempted": false,
+        "failed": false,
+        "reason": ""
+      },
+      "source": "qwen",
+      "request_id": "be506fcc-b0c2-4e7d-b469-8881b1ed3fca",
+      "prompt_version": "parse-v1.1.0",
+      "raw_model_output": "",
+      "passed": true,
+      "execution": {
+        "run_id": "aeb1d520-13fb-4880-bbfe-de9d624aa827",
+        "valid": true,
+        "output": [
+          -924,
+          -902,
+          -882,
+          -852,
+          -824,
+          -808,
+          -692,
+          -561,
+          -337,
+          -252,
+          -192,
+          -144,
+          -112,
+          39,
+          97,
+          193,
+          333,
+          681,
+          863,
+          941
+        ],
+        "metrics": {
+          "comparisons": 187.0,
+          "swaps": 105.0,
+          "elapsed_ms": 2.0251000023563392
+        }
+      }
+    },
+    {
+      "id": "CFG-02",
+      "text": "冒泡排序，来 30 个有序数，种子 42",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "size": 30,
+        "distribution": "sorted",
+        "seed": 42
+      },
+      "actual_status": "ok",
+      "actual_error_code": null,
+      "config": {
+        "schema_version": "1.0",
+        "algorithm": "bubble_sort",
+        "mode": "experiment",
+        "input": {
+          "size": 30,
+          "distribution": "sorted",
+          "seed": 42,
+          "values": null
+        },
+        "parameters": {},
+        "visualization": {
+          "enabled": true
+        },
+        "metrics": [
+          "comparisons",
+          "swaps",
+          "elapsed_ms"
+        ]
+      },
+      "repair": {
+        "attempted": false,
+        "failed": false,
+        "reason": ""
+      },
+      "source": "qwen",
+      "request_id": "3c741b3c-58f0-4dcb-9afb-b5b5db112909",
+      "prompt_version": "parse-v1.1.0",
+      "raw_model_output": "",
+      "passed": true,
+      "execution": {
+        "run_id": "f37dc0c3-ff29-4866-ba78-6c4fac1946d8",
+        "valid": true,
+        "output": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "metrics": {
+          "comparisons": 29.0,
+          "swaps": 0.0,
+          "elapsed_ms": 0.1188000023830682
+        }
+      }
+    },
+    {
+      "id": "CFG-03",
+      "text": "帮我用冒泡排序跑 25 个逆序排列的数",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "size": 25,
+        "distribution": "reversed",
+        "seed": 42
+      },
+      "actual_status": "ok",
+      "actual_error_code": null,
+      "config": {
+        "schema_version": "1.0",
+        "algorithm": "bubble_sort",
+        "mode": "experiment",
+        "input": {
+          "size": 25,
+          "distribution": "reversed",
+          "seed": 42,
+          "values": null
+        },
+        "parameters": {},
+        "visualization": {
+          "enabled": true
+        },
+        "metrics": [
+          "comparisons",
+          "swaps",
+          "elapsed_ms"
+        ]
+      },
+      "repair": {
+        "attempted": false,
+        "failed": false,
+        "reason": ""
+      },
+      "source": "qwen",
+      "request_id": "d76cf256-b87a-43f9-a33f-99c3483f1bc8",
+      "prompt_version": "parse-v1.1.0",
+      "raw_model_output": "",
+      "passed": true,
+      "execution": {
+        "run_id": "99e73988-06c2-473b-9520-559bd09bbf33",
+        "valid": true,
+        "output": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25
+        ],
+        "metrics": {
+          "comparisons": 300.0,
+          "swaps": 300.0,
+          "elapsed_ms": 2.487900001142407
+        }
+      }
+    },
+    {
+      "id": "CFG-04",
+      "text": "用冒泡排序排这个数组：[5, 3, 8, 1, 9, 2]",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "values": [
+          5,
+          3,
+          8,
+          1,
+          9,
+          2
+        ],
+        "size": 6
+      },
+      "actual_status": "ok",
+      "actual_error_code": null,
+      "config": {
+        "schema_version": "1.0",
+        "algorithm": "bubble_sort",
+        "mode": "experiment",
+        "input": {
+          "size": 6,
+          "distribution": "random",
+          "seed": 42,
+          "values": [
+            5,
+            3,
+            8,
+            1,
+            9,
+            2
+          ]
+        },
+        "parameters": {},
+        "visualization": {
+          "enabled": true
+        },
+        "metrics": [
+          "comparisons",
+          "swaps",
+          "elapsed_ms"
+        ]
+      },
+      "repair": {
+        "attempted": false,
+        "failed": false,
+        "reason": ""
+      },
+      "source": "qwen",
+      "request_id": "5c0e75b9-39f4-411c-b844-df1feebeac58",
+      "prompt_version": "parse-v1.1.0",
+      "raw_model_output": "",
+      "passed": true,
+      "execution": {
+        "run_id": "e036688d-5350-4b61-812f-e88306881f8b",
+        "valid": true,
+        "output": [
+          1,
+          2,
+          3,
+          5,
+          8,
+          9
+        ],
+        "metrics": {
+          "comparisons": 15.0,
+          "swaps": 8.0,
+          "elapsed_ms": 0.15669999993406236
+        }
+      }
+    },
+    {
+      "id": "CFG-05",
+      "text": "冒泡排序，35 个随机数，随机种子 123",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "size": 35,
+        "distribution": "random",
+        "seed": 123
+      },
+      "actual_status": "ok",
+      "actual_error_code": null,
+      "config": {
+        "schema_version": "1.0",
+        "algorithm": "bubble_sort",
+        "mode": "experiment",
+        "input": {
+          "size": 35,
+          "distribution": "random",
+          "seed": 123,
+          "values": null
+        },
+        "parameters": {},
+        "visualization": {
+          "enabled": true
+        },
+        "metrics": [
+          "comparisons",
+          "swaps",
+          "elapsed_ms"
+        ]
+      },
+      "repair": {
+        "attempted": false,
+        "failed": false,
+        "reason": ""
+      },
+      "source": "qwen",
+      "request_id": "f61776b3-7907-4734-ada4-19511800fa55",
+      "prompt_version": "parse-v1.1.0",
+      "raw_model_output": "",
+      "passed": true,
+      "execution": {
+        "run_id": "ac312173-0939-4d07-b38c-c3a76355d294",
+        "valid": true,
+        "output": [
+          -997,
+          -922,
+          -894,
+          -893,
+          -857,
+          -822,
+          -821,
+          -780,
+          -724,
+          -674,
+          -665,
+          -498,
+          -455,
+          -452,
+          -320,
+          -317,
+          -310,
+          -303,
+          -227,
+          -224,
+          -166,
+          -107,
+          98,
+          148,
+          151,
+          223,
+          437,
+          574,
+          584,
+          717,
+          745,
+          791,
+          799,
+          845,
+          855
+        ],
+        "metrics": {
+          "comparisons": 589.0,
+          "swaps": 285.0,
+          "elapsed_ms": 8.800199997494929
+        }
+      }
+    },
+    {
+      "id": "CFG-06",
+      "text": "做一次性能实验，冒泡排序处理 200 个随机数，不需要动画",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "size": 200,
+        "distribution": "random",
+        "visualization.enabled": false
+      },
+      "actual_status": "ok",
+      "actual_error_code": null,
+      "config": {
+        "schema_version": "1.0",
+        "algorithm": "bubble_sort",
+        "mode": "experiment",
+        "input": {
+          "size": 200,
+          "distribution": "random",
+          "seed": 42,
+          "values": null
+        },
+        "parameters": {},
+        "visualization": {
+          "enabled": false
+        },
+        "metrics": [
+          "comparisons",
+          "swaps",
+          "elapsed_ms"
+        ]
+      },
+      "repair": {
+        "attempted": false,
+        "failed": false,
+        "reason": ""
+      },
+      "source": "qwen",
+      "request_id": "599c42e3-7b52-4049-94d1-f7693f4c7ebf",
+      "prompt_version": "parse-v1.1.0",
+      "raw_model_output": "",
+      "passed": true,
+      "execution": {
+        "run_id": "96022f71-c3a8-47d9-bfcd-d6ed4414cab2",
+        "valid": true,
+        "output": [
+          -987,
+          -977,
+          -949,
+          -946,
+          -939,
+          -935,
+          -935,
+          -912,
+          -907,
+          -904,
+          -886,
+          -870,
+          -865,
+          -858,
+          -854,
+          -839,
+          -837,
+          -822,
+          -814,
+          -811,
+          -809,
+          -802,
+          -794,
+          -791,
+          -791,
+          -776,
+          -772,
+          -766,
+          -745,
+          -717,
+          -715,
+          -715,
+          -708,
+          -687,
+          -682,
+          -674,
+          -673,
+          -667,
+          -666,
+          -650,
+          -607,
+          -593,
+          -571,
+          -568,
+          -565,
+          -560,
+          -553,
+          -551,
+          -551,
+          -549,
+          -543,
+          -534,
+          -531,
+          -524,
+          -524,
+          -499,
+          -499,
+          -495,
+          -486,
+          -462,
+          -459,
+          -458,
+          -454,
+          -452,
+          -448,
+          -437,
+          -431,
+          -431,
+          -431,
+          -408,
+          -400,
+          -356,
+          -354,
+          -336,
+          -311,
+          -304,
+          -296,
+          -273,
+          -265,
+          -260,
+          -259,
+          -253,
+          -242,
+          -225,
+          -223,
+          -222,
+          -222,
+          -219,
+          -212,
+          -190,
+          -183,
+          -179,
+          -141,
+          -136,
+          -136,
+          -135,
+          -123,
+          -81,
+          -72,
+          -61,
+          -60,
+          -54,
+          -42,
+          10,
+          22,
+          34,
+          43,
+          83,
+          93,
+          98,
+          103,
+          116,
+          116,
+          130,
+          133,
+          140,
+          149,
+          149,
+          161,
+          182,
+          195,
+          197,
+          206,
+          209,
+          220,
+          221,
+          232,
+          236,
+          247,
+          266,
+          285,
+          287,
+          300,
+          301,
+          309,
+          310,
+          316,
+          327,
+          330,
+          342,
+          354,
+          372,
+          385,
+          393,
+          393,
+          396,
+          399,
+          402,
+          409,
+          429,
+          436,
+          437,
+          442,
+          466,
+          470,
+          476,
+          493,
+          494,
+          508,
+          516,
+          518,
+          525,
+          529,
+          547,
+          554,
+          563,
+          573,
+          583,
+          589,
+          622,
+          648,
+          650,
+          652,
+          657,
+          683,
+          698,
+          708,
+          726,
+          735,
+          751,
+          762,
+          763,
+          764,
+          774,
+          780,
+          794,
+          811,
+          813,
+          827,
+          838,
+          870,
+          872,
+          888,
+          895,
+          918,
+          930,
+          931,
+          960,
+          988,
+          992
+        ],
+        "metrics": {
+          "comparisons": 19890.0,
+          "swaps": 9289.0,
+          "elapsed_ms": 3.7162000007811002
+        }
+      }
+    },
+    {
+      "id": "CFG-07",
+      "text": "把它改成逆序分布",
+      "expected": {
+        "status": "needs_clarification",
+        "error_code": "E-AMBIGUOUS-INPUT"
+      },
+      "actual_status": "needs_clarification",
+      "actual_error_code": "E-AMBIGUOUS-INPUT",
+      "config": null,
+      "repair": {
+        "attempted": false,
+        "failed": false,
+        "reason": ""
+      },
+      "source": "qwen",
+      "request_id": "fb2b7b77-ee82-4d31-a6c6-a022409f75c2",
+      "prompt_version": "parse-v1.1.0",
+      "raw_model_output": "",
+      "passed": true
+    },
+    {
+      "id": "CFG-08",
+      "text": "用 Dijkstra 算法跑一个 10 个节点的实验",
+      "expected": {
+        "status": "error",
+        "error_code": "E-UNKNOWN-ALGORITHM"
+      },
+      "actual_status": "error",
+      "actual_error_code": "E-UNKNOWN-ALGORITHM",
+      "config": null,
+      "repair": {
+        "attempted": false,
+        "failed": false,
+        "reason": ""
+      },
+      "source": "qwen",
+      "request_id": "8acfd0d5-18f6-4209-8d64-b2dd51cb2d81",
+      "prompt_version": "parse-v1.1.0",
+      "raw_model_output": "",
+      "passed": true
+    },
+    {
+      "id": "CFG-09",
+      "text": "用快速排序处理 30 个随机数",
+      "expected": {
+        "status": "error",
+        "error_code": "E-UNKNOWN-ALGORITHM"
+      },
+      "actual_status": "error",
+      "actual_error_code": "E-UNKNOWN-ALGORITHM",
+      "config": null,
+      "repair": {
+        "attempted": false,
+        "failed": false,
+        "reason": ""
+      },
+      "source": "qwen",
+      "request_id": "77154aa8-f117-4ce2-a8ac-a4c627ddefd0",
+      "prompt_version": "parse-v1.1.0",
+      "raw_model_output": "",
+      "passed": true
+    },
+    {
+      "id": "CFG-10",
+      "text": "冒泡排序处理 10 个数，seed 设成 -5，另外把 foo 参数设为 1",
+      "expected": {
+        "status": "error",
+        "error_code_candidates": [
+          "E-SCHEMA-INVALID",
+          "E-SCHEMA-UNKNOWN-FIELD"
+        ]
+      },
+      "actual_status": "error",
+      "actual_error_code": "E-SCHEMA-INVALID",
+      "config": null,
+      "repair": {
+        "attempted": false,
+        "failed": false,
+        "reason": ""
+      },
+      "source": "qwen",
+      "request_id": "431e50ae-2e6e-48fa-bb6a-3848718ed717",
+      "prompt_version": "parse-v1.1.0",
+      "raw_model_output": "",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,373 @@
+{
+  "knowledge_version": "kb-v1.0.0",
+  "embedding": "bge-real",
+  "embedding_model": "BAAI/bge-small-zh-v1.5",
+  "embedding_dim": 512,
+  "index_type": "IndexFlatIP",
+  "top_k": 4,
+  "document_count": 40,
+  "built_at": "2026-11-25T05:48:08.276724+00:00",
+  "notice": null,
+  "documents": [
+    {
+      "source_id": "GEN-001",
+      "title": "L1 知识问答支持层级定义",
+      "topic": "capability.level.L1",
+      "version": "1.0",
+      "source_url": "https://github.com/",
+      "support_level": "L1",
+      "content": "L1 表示模型可回答原理、条件与伪代码，但需要来源和不确定性提示，不保证任意算法答案正确。L1 算法没有执行器，不能进入真实实验。"
+    },
+    {
+      "source_id": "GEN-002",
+      "title": "L2/L3/L4 支持层级定义",
+      "topic": "capability.level.L2_L3_L4",
+      "version": "1.0",
+      "source_url": "https://github.com/",
+      "support_level": "L2",
+      "content": "L2 支持前提检查、复杂度与伪代码解析但无执行器；L3 必须通过白名单与单元测试的真实执行器；L4 具备轨迹动画与报告。本项目当前只有冒泡排序达到 L3/L4，其他三种排序为 L2。"
+    },
+    {
+      "source_id": "GEN-005",
+      "title": "二分查找前提与复杂度",
+      "topic": "search.binary",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Binary_search_algorithm",
+      "support_level": "L1",
+      "content": "二分查找要求数组已按目标键有序，每次比较中间元素并缩小一半区间，时间复杂度 O(log n)。无序数组上结果无意义。本项目无该执行器，仅作知识问答。"
+    },
+    {
+      "source_id": "GEN-006",
+      "title": "Dijkstra 算法前提与复杂度",
+      "topic": "graph.dijkstra",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
+      "support_level": "L1",
+      "content": "Dijkstra 求非负权重图的单源最短路，基于优先队列实现为 O((V+E) log V)。负权重边会使结果错误，应改用 Bellman-Ford。本平台无该执行器，只能知识问答。"
+    },
+    {
+      "source_id": "GEN-007",
+      "title": "KMP 字符串匹配核心思想",
+      "topic": "string.kmp",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm",
+      "support_level": "L1",
+      "content": "KMP 通过前缀函数（next 数组）在失配时跳过已知不匹配的前缀，避免主串指针回退，时间 O(n+m)。本平台无执行器。"
+    },
+    {
+      "source_id": "GEN-008",
+      "title": "动态规划适用条件",
+      "topic": "algorithm.dynamic_programming",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Dynamic_programming",
+      "support_level": "L1",
+      "content": "动态规划适用于具有最优子结构和重叠子问题性质的问题，通过状态定义与转移方程自底向上或记忆化求解。不能仅凭「看着像递归」判断适用。"
+    },
+    {
+      "source_id": "GEN-009",
+      "title": "贪心算法适用条件与局限",
+      "topic": "algorithm.greedy",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Greedy_algorithm",
+      "support_level": "L1",
+      "content": "贪心算法每步取局部最优，只有在满足贪心选择性质时才能得到全局最优。对一般 0/1 背包问题贪心不成立，需要动态规划。"
+    },
+    {
+      "source_id": "GEN-010",
+      "title": "BFS 与 DFS 的遍历差异",
+      "topic": "graph.bfs_dfs",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Breadth-first_search",
+      "support_level": "L1",
+      "content": "BFS 使用队列逐层遍历，适合求无权图最短路；DFS 使用栈或递归深入回溯，适合拓扑与连通分量。本平台本期不实现图动画。"
+    },
+    {
+      "source_id": "GEN-011",
+      "title": "哈希表平均与最坏复杂度",
+      "topic": "structure.hash",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Hash_table",
+      "support_level": "L1",
+      "content": "哈希表的 O(1) 平均查找依赖均匀散列与合理负载因子；大量冲突时退化为 O(n)。复杂度结论必须附带前提。"
+    },
+    {
+      "source_id": "GEN-012",
+      "title": "树与二叉搜索树查找复杂度",
+      "topic": "structure.tree",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Binary_search_tree",
+      "support_level": "L1",
+      "content": "平衡二叉搜索树查找 O(log n)，退化为链表时 O(n)。是否平衡是复杂度结论的必要前提。"
+    },
+    {
+      "source_id": "GEN-013",
+      "title": "比较排序的下界 O(n log n)",
+      "topic": "complexity.sorting_lower_bound",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Comparison_sort",
+      "support_level": "L2",
+      "content": "基于比较的排序算法最坏情况至少 Ω(n log n) 次比较，由决策树叶子数 n! 推出。该下界不约束计数排序等非比较排序。"
+    },
+    {
+      "source_id": "GEN-014",
+      "title": "算法复杂度中的输入规模定义",
+      "topic": "complexity.input_size",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Analysis_of_algorithms",
+      "support_level": "L2",
+      "content": "复杂度必须说明输入规模 n 的含义：排序中 n 是元素个数，图算法中通常是顶点数 V 与边数 E。脱离规模定义的 O(·) 表述无意义。"
+    },
+    {
+      "source_id": "GEN-015",
+      "title": "快速排序递归栈空间与最坏深度",
+      "topic": "sorting.quick.stack",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort#Space_complexity",
+      "support_level": "L2",
+      "content": "快排递归栈平均深度 O(log n)，首枢轴有序输入下可达 O(n)。尾递归优化和先递归较小区间可把最坏栈深压到 O(log n)。"
+    },
+    {
+      "source_id": "GEN-016",
+      "title": "反例诊断的证明范围",
+      "topic": "experiment.methodology.counterexample",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Counterexample",
+      "support_level": "L2",
+      "content": "一个反例只能证明特定实现在特定输入上的性质，不能推广为所有快排实现的最坏情形。报告措辞必须限定实现与输入前提。"
+    },
+    {
+      "source_id": "GEN-017",
+      "title": "随机种子与可复现实验",
+      "topic": "experiment.methodology.reproducibility",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Random_seed",
+      "support_level": "L2",
+      "content": "固定随机种子使输入生成可复现。比较不同策略时应使用相同数组而非仅相同 seed，否则数据分布差异会混淆结论。"
+    },
+    {
+      "source_id": "GEN-018",
+      "title": "模型解释不得编造指标",
+      "topic": "experiment.methodology.explanation",
+      "version": "1.0",
+      "source_url": "https://github.com/",
+      "support_level": "L2",
+      "content": "结果解释只能引用执行器真实返回的输入、输出、指标、验证与 run_id。模型不得自行推算比较次数或耗时，不得编造未运行实验的结论。"
+    },
+    {
+      "source_id": "GEN-019",
+      "title": "RAG 检索无结果时的处理",
+      "topic": "rag.no_result",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Retrieval-augmented_generation",
+      "support_level": "L2",
+      "content": "检索无结果时必须显式提示失败并返回空来源，不得编造 source_id 或引用。人工复核的核心条目可作为兜底。"
+    },
+    {
+      "source_id": "GEN-020",
+      "title": "知识引用来源 ID 的必要性",
+      "topic": "rag.source_trace",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Retrieval-augmented_generation",
+      "support_level": "L2",
+      "content": "每条知识单元保存 source_id/title/topic/version/source_url，使回答可核查。引用错位属于检索缺陷，评测时需单独分类统计。"
+    },
+    {
+      "source_id": "GEN-021",
+      "title": "本地索引与演示时离线构建",
+      "topic": "rag.indexing",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Vector_database",
+      "support_level": "L2",
+      "content": "BGE Embedding 与 FAISS 索引应离线预建，固定模型名、向量维度与知识版本。演示时避免临时全库重建导致延迟或结果漂移。"
+    },
+    {
+      "source_id": "GEN-022",
+      "title": "Schema 校验与未知字段拒绝",
+      "topic": "ai.schema_validation",
+      "version": "1.0",
+      "source_url": "https://docs.pydantic.dev/latest/concepts/models/",
+      "support_level": "L2",
+      "content": "Pydantic StrictModel 设置 extra=forbid 后，任何未声明字段都会被拒绝。这防止模型输出任意参数污染执行配置。"
+    },
+    {
+      "source_id": "SORT-001",
+      "title": "冒泡排序基本定义",
+      "topic": "sorting.bubble",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Bubble_sort",
+      "support_level": "L3",
+      "content": "冒泡排序重复遍历数组，比较相邻元素并在顺序错误时交换，使较大元素逐步移动到末尾。每轮至少确定一个最终位置。"
+    },
+    {
+      "source_id": "SORT-002",
+      "title": "冒泡排序时间复杂度前提",
+      "topic": "sorting.bubble.complexity",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Bubble_sort",
+      "support_level": "L2",
+      "content": "冒泡排序最坏和平均比较次数为 n(n-1)/2，即 O(n²)。该结论针对基于相邻比较交换的实现，输入规模为 n，且假设没有提前终止优化。"
+    },
+    {
+      "source_id": "SORT-003",
+      "title": "冒泡排序最优情形与提前终止",
+      "topic": "sorting.bubble.best_case",
+      "version": "1.0",
+      "source_url": "https://www.geeksforgeeks.org/bubble-sort/",
+      "support_level": "L2",
+      "content": "带交换标志优化的冒泡排序在已排序输入上只需一轮遍历，比较次数 n-1，为 O(n)。未实现该优化时仍为 O(n²)。本项目执行器是否有该优化以源码为准。"
+    },
+    {
+      "source_id": "SORT-004",
+      "title": "冒泡排序稳定性",
+      "topic": "sorting.bubble.stability",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Sorting_algorithm#Stability",
+      "support_level": "L2",
+      "content": "冒泡排序是稳定排序：相等元素之间不发生交换，相对顺序保持不变。稳定性前提是交换条件严格使用大于而非大于等于。"
+    },
+    {
+      "source_id": "SORT-005",
+      "title": "冒泡排序空间复杂度",
+      "topic": "sorting.bubble.space",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Bubble_sort",
+      "support_level": "L2",
+      "content": "冒泡排序为原地排序，除循环变量外只需常数额外空间 O(1)。轨迹记录会产生额外存储，但不属于算法本身的空间开销。"
+    },
+    {
+      "source_id": "SORT-006",
+      "title": "插入排序基本定义",
+      "topic": "sorting.insertion",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Insertion_sort",
+      "support_level": "L2",
+      "content": "插入排序逐个将当前元素插入到前面已排序子序列的正确位置。实现方式可以是交换型或移位型，比较次数与逆序对数量相关。"
+    },
+    {
+      "source_id": "SORT-007",
+      "title": "插入排序复杂度与输入前提",
+      "topic": "sorting.insertion.complexity",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Insertion_sort",
+      "support_level": "L2",
+      "content": "插入排序最坏 O(n²)（逆序输入），最好 O(n)（已排序输入）。其运行时间与输入中的逆序对数量成正比，适合小规模或近乎有序数据。"
+    },
+    {
+      "source_id": "SORT-008",
+      "title": "插入排序稳定性与空间",
+      "topic": "sorting.insertion.stability",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Insertion_sort",
+      "support_level": "L2",
+      "content": "插入排序通常稳定（只在严格小于时移动元素），且为原地排序 O(1) 额外空间。"
+    },
+    {
+      "source_id": "SORT-009",
+      "title": "快速排序基本定义与分治结构",
+      "topic": "sorting.quick",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort",
+      "support_level": "L2",
+      "content": "快速排序选取枢轴，将数组划分为小于和大于枢轴的两部分，再递归排序。划分（partition）是核心步骤，枢轴选择策略直接决定递归树深度。"
+    },
+    {
+      "source_id": "SORT-010",
+      "title": "快速排序平均复杂度前提",
+      "topic": "sorting.quick.average",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort",
+      "support_level": "L2",
+      "content": "在枢轴使划分较为均衡的前提下，快速排序平均比较次数约 2n ln n，即 O(n log n)。该结论依赖输入分布或随机化枢轴，不能无条件宣称。"
+    },
+    {
+      "source_id": "SORT-011",
+      "title": "快速排序最坏情形：首元素枢轴 + 有序输入",
+      "topic": "sorting.quick.worst_case",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort#Worst-case_analysis",
+      "support_level": "L2",
+      "content": "当枢轴总取区间第一个元素且输入已排序（或逆序）时，每次划分只减少一个元素，递归深度为 n，比较次数 n(n-1)/2，退化为 O(n²)。这是本项目反例诊断的核心案例，仅证明该具体实现在该输入下的性质。"
+    },
+    {
+      "source_id": "SORT-012",
+      "title": "随机枢轴对快排最坏情形的作用",
+      "topic": "sorting.quick.random_pivot",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort#Randomized_quicksort",
+      "support_level": "L2",
+      "content": "随机选择枢轴使最坏情况成为低概率事件，期望比较次数为 O(n log n)。给定随机种子时结果可复现；同输入下比较首枢轴与随机枢轴属于条件变化对比，不是同分布的公平对照。"
+    },
+    {
+      "source_id": "SORT-013",
+      "title": "双枢轴快速排序概念",
+      "topic": "sorting.quick.dual_pivot",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort#Dual-pivot_quicksort",
+      "support_level": "L1",
+      "content": "双枢轴快排每次选取两个枢轴，把数组划分为三段。Java Arrays.sort 对基本类型采用该策略。本平台当前无该执行器，只能作知识问答（L1），不得声称可执行。"
+    },
+    {
+      "source_id": "SORT-014",
+      "title": "归并排序基本定义",
+      "topic": "sorting.merge",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Merge_sort",
+      "support_level": "L2",
+      "content": "归并排序采用分治：把数组递归分成两半分别排序，再合并两个有序子序列。合并过程需要辅助数组。"
+    },
+    {
+      "source_id": "SORT-015",
+      "title": "归并排序复杂度与稳定性",
+      "topic": "sorting.merge.complexity",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Merge_sort",
+      "support_level": "L2",
+      "content": "归并排序最坏、平均、最好时间均为 O(n log n)，稳定，但需要 O(n) 额外空间。与输入初始顺序无关是其稳定表现的前提。"
+    },
+    {
+      "source_id": "SORT-016",
+      "title": "四种排序的稳定性对照",
+      "topic": "sorting.comparison.stability",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Sorting_algorithm#Stability",
+      "support_level": "L2",
+      "content": "常见实现中冒泡、插入、归并为稳定排序；快速排序通常不稳定，因为划分交换会改变相等元素的相对顺序。"
+    },
+    {
+      "source_id": "SORT-017",
+      "title": "四种排序的空间开销对照",
+      "topic": "sorting.comparison.space",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Sorting_algorithm",
+      "support_level": "L2",
+      "content": "冒泡、插入、快排通常为 O(1) 或 O(log n)（递归栈）额外空间；归并排序需要 O(n) 辅助数组。对比时需说明是否计入递归栈与轨迹存储。"
+    },
+    {
+      "source_id": "SORT-018",
+      "title": "同输入公平对照的前提",
+      "topic": "experiment.methodology.same_input",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Benchmarking",
+      "support_level": "L2",
+      "content": "比较两种算法的次数或耗时，必须使用完全相同的输入数组、相同环境与相同随机种子。仅修改规模或分布属于条件变化对比，不得称为同输入公平对照。"
+    },
+    {
+      "source_id": "SORT-019",
+      "title": "比较次数与写入次数的区分",
+      "topic": "experiment.metrics.counting",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Analysis_of_algorithms",
+      "support_level": "L2",
+      "content": "比较次数只统计明确的相邻或枢轴比较操作；swap 与 write 应分开计数。耗时测量应排除 UI 动画与轨迹序列化开销，否则指标不可比。"
+    },
+    {
+      "source_id": "SORT-020",
+      "title": "逆序对与插入排序运行时间",
+      "topic": "sorting.insertion.inversions",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Inversion_(discrete_mathematics)",
+      "support_level": "L2",
+      "content": "逆序对是满足 i<j 且 a[i]>a[j] 的二元组。插入排序的移位次数等于逆序对数，因此近乎有序输入的逆序对很少，运行接近线性。"
+    }
+  ]
+}
