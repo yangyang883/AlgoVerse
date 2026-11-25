@@ -1,0 +1,35 @@
+{
+  "dataset_version": "v0.1",
+  "as_of": "2026-11-25",
+  "target_total": 100,
+  "fallback_total": 80,
+  "planned": {
+    "knowledge": 25,
+    "config_followup": 30,
+    "execution_explain": 20,
+    "counterexample": 15,
+    "invalid_input": 10
+  },
+  "actual": {
+    "knowledge": 5,
+    "config_followup": 5,
+    "execution_explain": 5,
+    "counterexample": 4,
+    "invalid_input": 4
+  },
+  "actual_total": 23,
+  "coverage_ratio": 0.23,
+  "reviewed_cases": 0,
+  "split": {
+    "dev": 23,
+    "frozen": 0
+  },
+  "scoring_methods": {
+    "knowledge": "human_rubric",
+    "config_followup": "field_match",
+    "execution_explain": "executor_check",
+    "counterexample": "human_rubric / executor_check",
+    "invalid_input": "refusal_check"
+  },
+  "note": "本表为种子批次，仅用于格式、流程与脚本验证。任何报告只能引用 actual，不得把 planned 当作已完成样本量；冻结集在 D13 才建立。"
+}

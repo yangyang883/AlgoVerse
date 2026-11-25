@@ -1,0 +1,20 @@
+{
+  "run_id": "real-probe-01",
+  "mode": "real",
+  "scoring": "not_run",
+  "total_cases": 2,
+  "ok_cases": 0,
+  "failed_cases": 2,
+  "by_category": {
+    "knowledge": {
+      "total": 2,
+      "ok": 0,
+      "failed": 2
+    }
+  },
+  "by_error_class": {
+    "CONNECTION_ERROR": 2
+  },
+  "finished_at": "2026-11-25T18:27:45+08:00",
+  "note": "本文件仅统计请求是否成功返回合法信封，不含任何正确性评分。"
+}
