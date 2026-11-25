@@ -1,14 +1,23 @@
 from uuid import uuid4
 
 from fastapi import FastAPI, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
 
 from app.engine.registry import CAPABILITIES
 from app.schemas.models import (
-    APIError, APIResponse, ChatRequest, ChatResult, CompareRequest, CompareResult,
-    ExperimentConfig, ExperimentResult, ParseRequest, ParseResult, ReportResult,
+    APIError,
+    APIResponse,
+    ChatRequest,
+    ChatResult,
+    CompareRequest,
+    CompareResult,
+    ExperimentConfig,
+    ExperimentResult,
+    ParseRequest,
+    ParseResult,
+    ReportResult,
 )
 from app.services.experiment import run_experiment
 
