@@ -38,7 +38,7 @@
 | `case_id` | `KNW/CFG/EXE/CEX/INV-四位序号` | 复用题号、跳号 |
 | `dataset_version` / `split` | 当前 `v0.1` / `dev`；冻结集 `v1.0-frozen` / `frozen` | 把 dev 题混入冻结集统计 |
 | `input.mode` | `chat`/`parse`/`run`/`compare`/`multi_turn` | 多轮题漏填 `multi_turn` |
-| `input.steps[].endpoint` | `/api/v1/chat`、`/experiments/parse`、`/experiments/run`、`/experiments/compare` | 用简称 `/chat`，与契约不符 |
+| `input.steps[].endpoint` | `/api/v1/chat`、`/api/v1/experiments/parse`、`/api/v1/experiments/run`、`/api/v1/experiments/compare` | 用简称 `/chat` 或漏掉 `/api/v1` 前缀，与契约和 schema enum 不符 |
 | `expected.required_fields` | 点号路径，如 `data.config.input.distribution` | 写中文描述而非路径 |
 | `expected.field_values` | 路径 → 期望值，用于客观比对 | 值写成"约等于" |
 | `expected.forbidden_fields` | 不得出现的路径，如 `data.config.color` | 遗漏，导致未知字段混过 |
@@ -58,6 +58,17 @@
 ## 5. 统一评分档位
 
 先算 rubric 加权分（0~1），再折算二值 `passed`（≥0.8）。对外报二值通过率，细粒度分数留在原始结果。含错误事实一律 0。
+
+四类评分方式的 `passed` 折算：
+
+| method | passed 条件 |
+|---|---|
+| `human_rubric` | rubric 加权分 ≥ 0.8 |
+| `field_match` | `required_fields` 全部存在、`field_values` 全部相等、`forbidden_fields` 均未出现 |
+| `executor_check` | `reference_value` / `reference_metrics` 全部命中，且证据取自本次真实 `run_id` |
+| `refusal_check` | 明确拒绝并说明原因；`should_reject=true` 时不得出现执行结果 |
+
+说明：三点式 rubric 若权重为 0.4/0.3/0.3，≥0.8 等价于三点全中，这是知识题“要点齐全”的有意设计，不视为权重失效；出题时须保证权重设置与期望的 `passed` 行为一致。
 
 | 档 | 含义 |
 |---|---|
@@ -150,3 +161,5 @@
 5. **已确认：执行记录位置。** `run_id` 保存在 SQLite `experiments` 表；统一响应含 `request_id`；`compare` 请求体为 `{"run_ids":["id-1","id-2"]}`。
 6. 待确认：反例有效性统一用"执行器实测比较次数 ÷ 理论值"判定，可以吗？
 7. **待会审：澄清与错误响应映射。** 当前 `ParseResult` 只有 `config/source/requires_confirmation/session_id`，无法直接表达 `needs_clarification/error`。组员 1 建议映射为 HTTP 422，`error.code=E-SCHEMA-* / E-AMBIGUOUS-INPUT`，`details` 带字段路径，需组员 3 确认后冻结契约。
+   - 补充风险：FastAPI 的 422 已被请求校验占用（`HTTPValidationError.detail[]`），业务澄清复用 422 会出现同一状态码两种响应结构；建议统一走 `error` 信封并停用默认 `detail` 格式，或改用 400/409。
+   - 采纳后同步成本：`case.schema.json` 的 `expected` 为 `additionalProperties: false`，需先新增 `expected.error_code`、`expected.error_details_paths`，再改 INV-0001/0002/0003/0004、CFG-0005。
