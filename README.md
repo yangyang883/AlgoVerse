@@ -1,10 +1,10 @@
 # AlgoVerse
 
-基于大语言模型的智能算法问答、实验规划与交互验证平台。此仓库当前为 D1 工程骨架：可运行冒泡排序手动实验、真实指标/轨迹与验证，提供 Vue 页面和健康检查。Qwen、RAG、另外三种排序、存储、对比、报告与科研评测属于后续 P0，尚未实现。P1/P2 边界见 `docs/requirements.md`。
+基于大语言模型的智能算法问答、实验规划与交互验证平台。当前后端可执行冒泡排序、保存 SQLite 实验结果，并提供 D6 单进程会话服务。真实 Qwen Provider、RAG、另外三种排序、对比、报告与科研评测尚未实现。P1/P2 边界见 `docs/requirements.md`。
 
 ## 技术栈与架构
 
-Vue 3 + TypeScript + Vite + Element Plus；FastAPI + Pydantic；计划引入 SQLite/SQLAlchemy、Qwen 兼容 API、BGE/FAISS、SVG/ECharts。模块化单体结构及数据流见 `docs/architecture.md`。算法由确定性白名单执行，模型只负责解析、规划和解释。
+Vue 3 + TypeScript + Vite + Element Plus；FastAPI + Pydantic + SQLite/SQLAlchemy；计划接入 Qwen 兼容 API、BGE/FAISS、SVG/ECharts。模块化单体结构及数据流见 `docs/architecture.md`。算法由确定性白名单执行，模型只负责解析、规划和解释。
 
 ## Windows 安装与启动
 
@@ -30,7 +30,7 @@ npm run dev
 
 ## 环境变量与测试
 
-`.env.example` 列出后续 Qwen 和 SQLite 配置；D1 不读取 Qwen Key。不要提交 `.env`。`QWEN_API_KEY`、`QWEN_BASE_URL`、`QWEN_MODEL` 待 D2 Provider 接入后才生效。
+`ALGOVERSE_DB_PATH` 指定 SQLite 文件；`ALGOVERSE_SESSION_TTL_SECONDS` 和 `ALGOVERSE_MAX_SESSIONS` 配置单进程内存会话。不要提交 `.env`。`QWEN_API_KEY`、`QWEN_BASE_URL`、`QWEN_MODEL` 待组员 1 Provider 接入后才生效。
 
 ```powershell
 cd backend
@@ -42,8 +42,12 @@ cd frontend
 npm run build
 ```
 
-契约源是 `backend/app/schemas/models.py`，生成文件位于 `contracts/` 和 `frontend/src/types/contracts.ts`。接口状态与异常见 `docs/api-contracts.md`。
+契约源是 `backend/app/schemas/models.py`，生成文件位于 `contracts/` 和 `frontend/src/types/contracts.ts`。接口状态与异常见 `docs/api-contracts.md`；评测对接的实际字段和请求示例见 `docs/backend-evaluation-handoff.md`。
 
 ## 协作与进度
 
-五人职责和第一周任务见 `docs/team-responsibilities.md`；每人四份、按五天周期执行的详细指导见 `docs/guides/README.md`；20 天路线和硬验收见 `docs/development-roadmap.md`；PR 规范见 `CONTRIBUTING.md`。当前只完成 D1 手动配置闭环。D2 优先 SQLite 追溯和 Qwen Provider，D3 联通自然语言解析并实测模型可达性。D7 未通过 P0 则不开始 P1，D12 冻结 P0 新功能。暂不提供开源许可证，待项目所有者确定。
+五人职责和第一周任务见 `docs/team-responsibilities.md`；每人四份、按五天周期执行的详细指导见 `docs/guides/README.md`；20 天路线和硬验收见 `docs/development-roadmap.md`；PR 规范见 `CONTRIBUTING.md`。当前完成 D6 后端会话与 SQLite 链路，真实 Qwen Provider 和其他排序算法待组员交付。D7 未通过 P0 则不开始 P1，D12 冻结 P0 新功能。暂不提供开源许可证，待项目所有者确定。
+
+## 当前 API
+
+`POST /api/v1/conversations` 创建会话；`GET /api/v1/conversations/{session_id}` 查询；`POST /api/v1/conversations/{session_id}/revise` 修订明示字段。`POST /api/v1/experiments/run` 运行并保存；`GET /api/v1/experiments/{run_id}` 查询结果；`POST /api/v1/experiments/compare` 对照相同实际输入的已保存运行。`POST /api/v1/experiments/parse` 等待组员 1 Provider，现仅 Mock 测试通过。已有会话解析须传 `confirmed_changes`；关联会话的运行配置须与已确认配置一致。会话默认 30 分钟过期、最多 100 个；演示使用单 Worker。错误统一返回 `data/error/request_id`。详见 `docs/backend-evaluation-handoff.md`。

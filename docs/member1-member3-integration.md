@@ -78,7 +78,7 @@ print(out.status, out.config.model_dump(), out.error_code)
 - 模型 `qwen-flash`，真实 HTTP 调用 1 次，成功
 - 解析出的 config：`algorithm=bubble_sort, input.values=[3,1,2], size=3, visualization.enabled=true`
 - `run_experiment(config)` 执行：`output=[1,2,3]`，`comparisons=3, swaps=2`
-- `run_id=77a99b80-cf14-45d9-afb1-d6ded3d6aa0a`
+- `run_id=218579df-a97d-4269-9861-7887ea51fc5c`（在合并最新 main 后重跑所得；每次运行会变，以产物 `integration-smoke.json` 为准）
 
 产物（均已脱敏，grep 无明文 Key）：
 - `backend/artifacts/integration-smoke.json` — 结构化结果

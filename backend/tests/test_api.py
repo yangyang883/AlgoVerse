@@ -1,5 +1,3 @@
-import os
-
 import pytest
 from pydantic import ValidationError
 from starlette.requests import Request
@@ -56,7 +54,6 @@ def test_openapi_routes():
     ])
 
 
-@pytest.mark.skipif(os.getenv("ALGOVERSE_SKIP_HTTP_TEST") == "1", reason="event loop unavailable in sandbox")
 def test_http_round_trip():
     from fastapi.testclient import TestClient
 
