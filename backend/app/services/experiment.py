@@ -3,11 +3,14 @@ import time
 from datetime import datetime, timezone
 from uuid import uuid4
 
+from app.engine.registry import CAPABILITIES
 from app.engine.sorting.bubble import bubble_sort
 from app.schemas.models import ExperimentConfig, ExperimentResult, ValidationResult
 
 
 def run_experiment(config: ExperimentConfig) -> ExperimentResult:
+    if not any(c.name == config.algorithm and c.executable for c in CAPABILITIES):
+        raise ValueError("algorithm is not executable")
     source = config.input
     if source.values is not None:
         values = source.values.copy()

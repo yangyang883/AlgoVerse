@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "hypothesis_id": {
+      "title": "Hypothesis Id",
+      "type": "string"
+    },
+    "hypothesis_type": {
+      "enum": [
+        "distribution_effect",
+        "same_input_comparison"
+      ],
+      "title": "Hypothesis Type",
+      "type": "string"
+    },
+    "question": {
+      "minLength": 1,
+      "title": "Question",
+      "type": "string"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "expected_observation": {
+      "minLength": 1,
+      "title": "Expected Observation",
+      "type": "string"
+    }
+  },
+  "required": [
+    "hypothesis_id",
+    "hypothesis_type",
+    "question",
+    "expected_observation"
+  ],
+  "title": "ExperimentHypothesis",
+  "type": "object"
+}

@@ -1,0 +1,61 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "hypothesis": {
+      "$ref": "#/$defs/ExperimentHypothesis"
+    },
+    "experiment_type": {
+      "enum": [
+        "distribution_effect",
+        "same_input_comparison"
+      ],
+      "title": "Experiment Type",
+      "type": "string"
+    },
+    "configurations": {
+      "items": {
+        "$ref": "#/$defs/ExperimentConfig"
+      },
+      "maxItems": 10,
+      "minItems": 2,
+      "title": "Configurations",
+      "type": "array"
+    },
+    "repetitions": {
+      "default": 1,
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Repetitions",
+      "type": "integer"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "status": {
+      "default": "validated",
+      "enum": [
+        "validated",
+        "running",
+        "completed",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "hypothesis",
+    "experiment_type",
+    "configurations",
+    "plan_id",
+    "created_at"
+  ],
+  "title": "EvidencePlan",
+  "type": "object"
+}
