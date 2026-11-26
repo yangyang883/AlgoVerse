@@ -51,10 +51,11 @@ print(out.status, out.config.model_dump(), out.error_code)
 
 **成功转契约**：`out.to_contract_result()` → `ParseResult(config, source, requires_confirmation=True, session_id=None)`，字段与你远程 main 的四字段契约一致（`session_id` 由你的路由用 `conversations` 回填）。
 
-**错误码 → HTTP 映射**（我适配层已实现，对齐你路由的 catch）：
+**错误码 → HTTP 映射**（按组员3 2026-11-26 确认的现有后端契约，适配层已实现）：
+- `status=needs_clarification` / `E-AMBIGUOUS-INPUT` → `HTTPException(409)` → **409 CONTEXT_CONFLICT**
 - `E-QWEN-TIMEOUT` → `TimeoutError` → **504 MODEL_TIMEOUT**
 - `E-QWEN-HTTP` / `E-QWEN-NO-CREDENTIAL` → `ConnectionError` → **503 MODEL_UNAVAILABLE**
-- `E-SCHEMA-*` / `E-UNKNOWN-ALGORITHM` / `E-PARSE-FAILED` / `E-AMBIGUOUS-INPUT` / 无效JSON → `ValidationError` → **422 VALIDATION_ERROR**，具体 code 在 `error.details.errors[].ctx.code`
+- `E-SCHEMA-*` / `E-UNKNOWN-ALGORITHM` / `E-PARSE-FAILED` / 无效JSON → `ValidationError` → **422 VALIDATION_ERROR**；`E-*` 仅作内部追踪，不放进虚构字段路径，`details.errors[].loc` 为空
 - 错误态一律 `data=null`，不塞进 `config`（契合你 `ParseResult.config` 必填）
 
 ---

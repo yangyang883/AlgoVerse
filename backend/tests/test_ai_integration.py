@@ -3,6 +3,7 @@
 import json
 
 import pytest
+from fastapi import HTTPException
 from pydantic import ValidationError
 
 from app.ai import errors
@@ -56,8 +57,25 @@ def test_repair_failure_maps_to_validation_error_with_code():
     with pytest.raises(ValidationError) as exc_info:
         provider(ParseRequest(text="用快排"))
     err = exc_info.value.errors()[0]
-    assert err["loc"] == ("ai", errors.UNKNOWN_ALGORITHM)
+    assert err["loc"] == ()
     assert err["ctx"]["code"] == errors.UNKNOWN_ALGORITHM
+
+
+def test_needs_clarification_maps_to_409_context_conflict():
+    def ambiguous(messages, source, rid):
+        return json.dumps({
+            "status": "needs_clarification",
+            "config": None,
+            "tool_suggestions": [],
+            "clarification": "请指定要排序的数组",
+            "error_code": None,
+        }, ensure_ascii=False)
+
+    provider = make_parse_provider(source="mock", call_model=ambiguous)
+    with pytest.raises(HTTPException) as exc_info:
+        provider(ParseRequest(text="排一下"))
+    assert exc_info.value.status_code == 409
+    assert exc_info.value.detail == "请指定要排序的数组"
 
 
 def test_transcript_is_written_on_success(tmp_path):

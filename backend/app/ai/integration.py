@@ -10,11 +10,15 @@
     from app.ai.integration import make_parse_provider
     app.state.parse_provider = make_parse_provider()
 
-异常映射（对齐远程 main.py 的 parse 路由现有 catch）：
-    TimeoutError    -> HTTP 504 MODEL_TIMEOUT
-    ConnectionError -> HTTP 503 MODEL_UNAVAILABLE
-    ValidationError -> HTTP 422 VALIDATION_ERROR
-                       AI 细粒度错误码在 error.details.errors[].ctx.code
+异常映射（按组员3 2026-11-26 确认的现有后端契约）：
+    needs_clarification -> HTTPException(409) -> 409 CONTEXT_CONFLICT
+    E-QWEN-TIMEOUT      -> TimeoutError       -> 504 MODEL_TIMEOUT
+    E-QWEN-HTTP / NO-CREDENTIAL
+                        -> ConnectionError    -> 503 MODEL_UNAVAILABLE
+    其它（非法 JSON / Schema / 不支持算法等）
+                        -> ValidationError    -> 422 VALIDATION_ERROR
+                       AI 细粒度 E-* 错误码只放 ctx.code 作内部追踪，
+                       不虚构字段路径；details 中不写假 loc。
 
 成功时返回 dict，字段严格限于契约 ParseResult：
     config / source / requires_confirmation
@@ -24,6 +28,7 @@ from __future__ import annotations
 
 from typing import Any, Callable
 
+from fastapi import HTTPException
 from pydantic import ValidationError
 from pydantic_core import PydanticCustomError
 
@@ -39,10 +44,14 @@ ModelFn = Callable[[Any, str, str], str]
 
 TIMEOUT_CODES = frozenset({errors.REQUEST_TIMEOUT})
 CONNECTION_CODES = frozenset({errors.HTTP_ERROR, errors.NO_CREDENTIAL})
+CLARIFICATION_CODES = frozenset({errors.AMBIGUOUS_INPUT})
 
 
 def _as_validation_error(outcome: ParseOutcome) -> ValidationError:
-    """把 AI 错误码塞进 Pydantic ValidationError，供组员3路由 422 透传。"""
+    """把 AI 错误码塞进 Pydantic ValidationError，供组员3路由 422 透传。
+
+    loc 留空：E-* 是内部错误码，不是请求字段路径；不虚构 details 字段位置。
+    """
     code = outcome.error_code or errors.PARSE_FAILED
     message = outcome.error_message or code
     ctx = {
@@ -61,16 +70,23 @@ def _as_validation_error(outcome: ParseOutcome) -> ValidationError:
         "ParseProvider",
         [{
             "type": PydanticCustomError(code, message, ctx),
-            "loc": ("ai", code),
+            "loc": (),
             "input": None,
         }],
     )
 
 
 def raise_for_outcome(outcome: ParseOutcome) -> None:
-    """把 ParseOutcome 失败态映射成组员3路由已 catch 的标准异常。"""
+    """把 ParseOutcome 失败态映射成组员3确认的 HTTP 契约异常。"""
     code = outcome.error_code or errors.PARSE_FAILED
     message = outcome.error_message or code
+    if outcome.status == "needs_clarification" or code in CLARIFICATION_CODES:
+        # 组员3契约：needs_clarification -> 409 CONTEXT_CONFLICT。
+        # E-* 只留内部日志，public detail 不暴露内部错误码。
+        raise HTTPException(
+            status_code=409,
+            detail=outcome.clarification or "需要澄清，请补充算法或输入上下文",
+        )
     if code in TIMEOUT_CODES:
         raise TimeoutError(message)
     if code in CONNECTION_CODES:
