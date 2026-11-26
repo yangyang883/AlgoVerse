@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "text": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+    },
+    "session_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Session Id"
+    },
+    "confirmed_changes": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Confirmed Changes"
+    }
+  },
+  "required": [
+    "text"
+  ],
+  "title": "ParseRequest",
+  "type": "object"
+}

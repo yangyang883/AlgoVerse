@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "changes": {
+      "additionalProperties": true,
+      "minProperties": 1,
+      "title": "Changes",
+      "type": "object"
+    }
+  },
+  "required": [
+    "changes"
+  ],
+  "title": "ConversationRevisionRequest",
+  "type": "object"
+}

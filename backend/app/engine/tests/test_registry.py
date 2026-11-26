@@ -37,9 +37,10 @@ def test_list_and_query_registered_algorithms() -> None:
         assert item["supports_trace"] is True
         assert item["supports_comparison"] is True
 
-    # 兼容仓库现有 CAPABILITIES
+    # 兼容仓库现有 CAPABILITIES：包含四种排序条目且 bubble_sort 已在 HTTP 层启用
     assert len(CAPABILITIES) == 4
-    assert all(cap.executable is True for cap in CAPABILITIES)
+    assert {cap.name for cap in CAPABILITIES} == ids
+    assert any(cap.name == "bubble_sort" and cap.executable for cap in CAPABILITIES)
 
 
 def test_quick_sort_parameter_constraints() -> None:

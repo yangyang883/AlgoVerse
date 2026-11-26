@@ -1,0 +1,40 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "config": {
+      "$ref": "#/$defs/ExperimentConfig"
+    },
+    "source": {
+      "enum": [
+        "qwen",
+        "manual",
+        "mock"
+      ],
+      "title": "Source",
+      "type": "string"
+    },
+    "requires_confirmation": {
+      "default": true,
+      "title": "Requires Confirmation",
+      "type": "boolean"
+    },
+    "session_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Session Id"
+    }
+  },
+  "required": [
+    "config",
+    "source"
+  ],
+  "title": "ParseResult",
+  "type": "object"
+}

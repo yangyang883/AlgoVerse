@@ -1,8 +1,10 @@
 """统一算法能力注册表模块。
 
 同时维护：
-1. 兼容仓库现有 API 路由 (/api/v1/algorithms) 的 CAPABILITIES 列表。
-2. 面向算法引擎与后端服务层的完整能力注册表及查询接口。
+1. 兼容仓库现有 HTTP API 层（app/main.py、services/experiment.py、services/evidence_lab.py）的
+   CAPABILITIES 列表；在组员 3 扩展 schemas/models.py 与 services/experiment.py 接入四排序前，
+   HTTP 层仅暴露当前服务层实际可调度的 bubble_sort，避免与服务端校验和测试冲突。
+2. 面向算法引擎层的完整能力注册表及查询接口，四个已实现的确定性排序执行器均为可执行状态。
 """
 
 from __future__ import annotations
@@ -12,7 +14,7 @@ from typing import Any
 
 from app.schemas.models import AlgorithmCapability
 
-# 兼容仓库既有 app/main.py 的能力清单（仅在完成执行器与单测后声明为可执行）
+# 兼容仓库既有 HTTP 服务层的能力清单（与当前 services/experiment.py 实际可调度能力保持一致）
 CAPABILITIES: list[AlgorithmCapability] = [
     AlgorithmCapability(
         name="bubble_sort",
@@ -23,24 +25,24 @@ CAPABILITIES: list[AlgorithmCapability] = [
     ),
     AlgorithmCapability(
         name="insertion_sort",
-        level="L4",
-        executable=True,
-        visualizable=True,
-        max_input_size=2000,
+        level="L2",
+        executable=False,
+        visualizable=False,
+        max_input_size=0,
     ),
     AlgorithmCapability(
         name="quick_sort",
-        level="L4",
-        executable=True,
-        visualizable=True,
-        max_input_size=2000,
+        level="L2",
+        executable=False,
+        visualizable=False,
+        max_input_size=0,
     ),
     AlgorithmCapability(
         name="merge_sort",
-        level="L4",
-        executable=True,
-        visualizable=True,
-        max_input_size=2000,
+        level="L2",
+        executable=False,
+        visualizable=False,
+        max_input_size=0,
     ),
 ]
 
