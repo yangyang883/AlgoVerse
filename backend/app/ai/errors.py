@@ -5,20 +5,20 @@
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict
+from typing import Any
 
 
 @dataclass(frozen=True)
 class AIError(Exception):
     code: str
     message: str
-    detail: Dict[str, Any] = field(default_factory=dict)
+    detail: dict[str, Any] = field(default_factory=dict)
     retryable: bool = False
 
     def __str__(self) -> str:  # pragma: no cover
         return f"[{self.code}] {self.message}"
 
-    def public_dict(self) -> Dict[str, Any]:
+    def public_dict(self) -> dict[str, Any]:
         return {
             "code": self.code,
             "message": self.message,

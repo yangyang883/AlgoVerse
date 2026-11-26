@@ -8,10 +8,11 @@
   由组员3映射到 HTTP 错误体（当前 ParseResult.config 必填，无法承载错误态）。
 - 不执行算法、不访问工具；仅输出工具选择建议。
 """
+from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable
 
 from pydantic import ValidationError
 
@@ -29,7 +30,7 @@ from app.ai.provider import (
 from app.engine.registry import CAPABILITIES
 from app.schemas.models import ExperimentConfig
 
-ToolFn = Callable[[List[Dict[str, str]], str, str], Any]
+ToolFn = Callable[[list[dict[str, str]], str, str], Any]
 
 
 @dataclass
@@ -45,12 +46,12 @@ class ParseOutcome:
     """AI 模块内部结果；成功时可转为契约 ParseResult。"""
 
     status: str  # ok | needs_clarification | error
-    config: Optional[ExperimentConfig] = None
+    config: ExperimentConfig | None = None
     source: str = "qwen"
-    tool_suggestions: List[Dict[str, Any]] = field(default_factory=list)
-    clarification: Optional[str] = None
-    error_code: Optional[str] = None
-    error_message: Optional[str] = None
+    tool_suggestions: list[dict[str, Any]] = field(default_factory=list)
+    clarification: str | None = None
+    error_code: str | None = None
+    error_message: str | None = None
     repair: RepairInfo = field(default_factory=RepairInfo)
     request_id: str = ""
     prompt_version: str = PROMPT_VERSION
@@ -65,11 +66,11 @@ class ParseOutcome:
         return ParseResult(config=self.config, source=self.source, requires_confirmation=True)
 
 
-def _known_algorithms() -> Dict[str, Any]:
+def _known_algorithms() -> dict[str, Any]:
     return {c.name: c for c in CAPABILITIES}
 
 
-def _validate_model_json(parsed: Dict[str, Any]) -> ParseOutcome:
+def _validate_model_json(parsed: dict[str, Any]) -> ParseOutcome:
     """校验模型输出；Unknown field 与非法枚举都在此拒绝。"""
     allowed_top = {"status", "config", "tool_suggestions", "clarification", "error_code"}
     extra = set(parsed.keys()) - allowed_top
@@ -155,9 +156,9 @@ def parse(
     *,
     source: str = "qwen",
     session=None,
-    provider: Optional[QwenProvider] = None,
-    tool_fn: Optional[ToolFn] = None,
-    request_id: Optional[str] = None,
+    provider: QwenProvider | None = None,
+    tool_fn: ToolFn | None = None,
+    request_id: str | None = None,
     max_repair: int = 1,
 ) -> ParseOutcome:
     """D03 主入口：一句话 → 受约束配置。

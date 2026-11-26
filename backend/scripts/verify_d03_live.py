@@ -18,7 +18,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from app.ai import errors
+from verify_d03 import req_stub
+
 from app.ai.planner import parse
 from app.ai.provider import (
     ProviderConfig,
@@ -27,7 +28,6 @@ from app.ai.provider import (
     write_transcript,
 )
 from app.main import run
-from verify_d03 import req_stub
 
 FIXTURE = ROOT / "tests" / "fixtures" / "config_samples.json"
 OUT = ROOT / "artifacts" / "d03-sample-results-live.json"
@@ -65,7 +65,6 @@ def main():
     cfg = ProviderConfig.from_env()
     cfg.check_real_call()
     results = []
-    latencies = []
 
     with QwenProvider(cfg) as provider:
         tool_fn = make_live_tool_fn(provider)
@@ -124,7 +123,7 @@ def main():
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(payload["summary"], ensure_ascii=False))
     for r in results:
-        print("{0} {1} status={2} error={3}".format(
+        print("{} {} status={} error={}".format(
             "PASS" if r["passed"] else "FAIL", r["id"], r["actual_status"], r["actual_error_code"]
         ))
 

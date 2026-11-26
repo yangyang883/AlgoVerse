@@ -169,7 +169,7 @@ def main():
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(payload["summary"], ensure_ascii=False))
     for r in results:
-        print("{0} {1} {2}".format("PASS" if r["passed"] else "FAIL", r["id"], r["actual_status"]))
+        print("{} {} {}".format("PASS" if r["passed"] else "FAIL", r["id"], r["actual_status"]))
 
 
 if __name__ == "__main__":

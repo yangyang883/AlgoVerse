@@ -12,6 +12,7 @@
 
 无结果时返回空 sources 与明确提示（RagAnswer.retrieved=False）。
 """
+from __future__ import annotations
 
 import hashlib
 import json
@@ -19,7 +20,7 @@ import shutil
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Protocol, Union
+from typing import Any, Protocol
 
 import numpy as np
 
@@ -35,7 +36,7 @@ class Embedder(Protocol):
     name: str
     dim: int
 
-    def encode(self, texts: List[str]) -> np.ndarray:
+    def encode(self, texts: list[str]) -> np.ndarray:
         ...
 
 
@@ -46,7 +47,7 @@ class OfflineHashEmbedder:
     dim: int = EXPECTED_DIM
     name: str = "offline-hash"
 
-    def encode(self, texts: List[str]) -> np.ndarray:
+    def encode(self, texts: list[str]) -> np.ndarray:
         vecs = np.zeros((len(texts), self.dim), dtype="float32")
         for i, text in enumerate(texts):
             # 字符级 bigram 哈希，保证中文短句有可区分性
@@ -80,7 +81,7 @@ class BgeEmbedder:
         )
         self.dim = int((dim_fn() if dim_fn else None) or EXPECTED_DIM)
 
-    def encode(self, texts: List[str]) -> np.ndarray:
+    def encode(self, texts: list[str]) -> np.ndarray:
         vecs = self._model.encode(texts, normalize_embeddings=True, show_progress_bar=False)
         return np.asarray(vecs, dtype="float32")
 
@@ -89,9 +90,9 @@ class BgeEmbedder:
 class RagAnswer:
     question: str
     answer: str
-    sources: List[Dict[str, Any]]
+    sources: list[dict[str, Any]]
     retrieved: bool
-    notice: Optional[str]
+    notice: str | None
     embedding: str
     knowledge_version: str
     top_k: int
@@ -102,7 +103,7 @@ class Index:
 
     def __init__(
         self,
-        index_path: Union[str, Path],
+        index_path: str | Path,
         embedder: Embedder,
         *,
         score_threshold: float = 0.0,
@@ -161,7 +162,7 @@ class Index:
             return self._empty_answer(query, "检索无结果，请勿编造来源", top_k)
         answer = f"根据检索到的 {len(sources)} 条知识条目，相关信息如下：\n"
         answer += "\n".join(
-            "[{0}] {1}：{2}".format(s["source_id"], s["title"], s["excerpt"]) for s in sources
+            "[{}] {}：{}".format(s["source_id"], s["title"], s["excerpt"]) for s in sources
         )
         notice = None
         if self.embedder.name == "offline-hash":
@@ -190,7 +191,7 @@ class Index:
         )
 
 
-def load_index(index_path: Union[str, Path], use_real_bge: bool = False) -> Index:
+def load_index(index_path: str | Path, use_real_bge: bool = False) -> Index:
     embedder: Embedder
     if use_real_bge:
         embedder = BgeEmbedder()

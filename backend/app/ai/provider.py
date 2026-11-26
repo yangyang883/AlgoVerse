@@ -6,6 +6,7 @@
 环境变量：QWEN_BASE_URL / QWEN_MODEL / QWEN_API_KEY / QWEN_TIMEOUT / QWEN_TEMPERATURE
 接口格式：OpenAI 兼容 POST {base_url}/chat/completions
 """
+from __future__ import annotations
 
 import json
 import os
@@ -14,9 +15,10 @@ import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable
 
 import httpx
+from typing_extensions import Self
 
 from app.ai import errors
 
@@ -30,7 +32,7 @@ ENV_FILE_NAME = ".env"
 _DOTENV_LOADED = False
 
 
-def load_dotenv(reload: bool = False) -> Optional[Path]:
+def load_dotenv(reload: bool = False) -> Path | None:
     """从当前目录向上、再从模块路径向上查找 .env，载入未设置的环境变量。
 
     系统环境变量优先，.env 不覆盖已显式设置的变量；找不到文件时不报错。
@@ -40,7 +42,7 @@ def load_dotenv(reload: bool = False) -> Optional[Path]:
         return None
     _DOTENV_LOADED = True
 
-    candidates: List[Path] = []
+    candidates: list[Path] = []
     starts = [Path.cwd().resolve(), Path(__file__).resolve().parent]
     for start in starts:
         for parent in [start] + list(start.parents)[:5]:
@@ -94,12 +96,12 @@ def new_request_id() -> str:
 class ProviderConfig:
     base_url: str
     model: str
-    api_key: Optional[str] = None
+    api_key: str | None = None
     timeout: float = 30.0
     temperature: float = 0.0
 
     @classmethod
-    def from_env(cls) -> "ProviderConfig":
+    def from_env(cls) -> ProviderConfig:
         load_dotenv()
         return cls(
             base_url=os.environ.get(ENV_BASE_URL, "").rstrip("/"),
@@ -114,10 +116,10 @@ class ProviderConfig:
         cls,
         base_url: str,
         model: str,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         timeout: float = 30.0,
         temperature: float = 0.0,
-    ) -> "ProviderConfig":
+    ) -> ProviderConfig:
         return cls(base_url.rstrip("/"), model, api_key, timeout, temperature)
 
     def check_real_call(self) -> None:
@@ -146,21 +148,21 @@ class ModelResponse:
     model: str
     source: str  # qwen | mock
     raw_snippet: str  # 已脱敏
-    usage: Optional[Dict[str, Any]] = None
+    usage: dict[str, Any] | None = None
     latency_ms: float = 0.0
 
 
 class QwenProvider:
     """真实调用与离线 Mock 共用接口；Mock 结果必须显式标注 source='mock'。"""
 
-    def __init__(self, config: Optional[ProviderConfig] = None) -> None:
+    def __init__(self, config: ProviderConfig | None = None) -> None:
         self.config = config or ProviderConfig.from_env()
         self._client = httpx.Client(timeout=httpx.Timeout(self.config.timeout))
 
     def close(self) -> None:
         self._client.close()
 
-    def __enter__(self) -> "QwenProvider":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, *args: object) -> None:
@@ -168,12 +170,12 @@ class QwenProvider:
 
     def chat_json(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         *,
         source: str = "qwen",
-        response_format: Optional[Dict[str, Any]] = None,
-        request_id: Optional[str] = None,
-        mock_fn: Optional[Callable[[List[Dict[str, str]]], str]] = None,
+        response_format: dict[str, Any] | None = None,
+        request_id: str | None = None,
+        mock_fn: Callable[[list[dict[str, str]]], str] | None = None,
     ) -> ModelResponse:
         rid = request_id or new_request_id()
         if source == "mock":
@@ -187,7 +189,7 @@ class QwenProvider:
             )
 
         self.config.check_real_call()
-        body: Dict[str, Any] = {
+        body: dict[str, Any] = {
             "model": self.config.model,
             "messages": messages,
             "temperature": self.config.temperature,
@@ -261,9 +263,9 @@ class QwenProvider:
 
     def _mock_chat(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         rid: str,
-        mock_fn: Optional[Callable[[List[Dict[str, str]]], str]],
+        mock_fn: Callable[[list[dict[str, str]]], str] | None,
     ) -> ModelResponse:
         if mock_fn is None:
             raise errors.AIError(
@@ -292,11 +294,11 @@ class QwenProvider:
 
 
 def write_transcript(
-    path: Union[str, Path],
+    path: str | Path,
     *,
-    request: Dict[str, Any],
-    response: Optional[ModelResponse] = None,
-    error: Optional[errors.AIError] = None,
+    request: dict[str, Any],
+    response: ModelResponse | None = None,
+    error: errors.AIError | None = None,
 ) -> Path:
     """把一次请求/响应写入脱敏 JSONL；敏感字段先掩码。"""
     p = Path(path)

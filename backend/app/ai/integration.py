@@ -20,8 +20,9 @@
     config / source / requires_confirmation
 （session_id 由组员3路由用 conversations 状态回填，AI 不自行生成会话。）
 """
+from __future__ import annotations
 
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable
 
 from pydantic import ValidationError
 from pydantic_core import PydanticCustomError
@@ -80,10 +81,10 @@ def raise_for_outcome(outcome: ParseOutcome) -> None:
 def make_parse_provider(
     *,
     source: str = "qwen",
-    call_model: Optional[ModelFn] = None,
-    transcript_path: Optional[str] = None,
+    call_model: ModelFn | None = None,
+    transcript_path: str | None = None,
     max_repair: int = 1,
-) -> Callable[[Any], Dict[str, Any]]:
+) -> Callable[[Any], dict[str, Any]]:
     """生成可注入 ``app.state.parse_provider`` 的 callable。
 
     Args:
@@ -96,13 +97,13 @@ def make_parse_provider(
     Returns:
         callable(ParseRequest) -> dict，可被 ParseResult.model_validate 接受。
     """
-    def provider(body: Any) -> Dict[str, Any]:
+    def provider(body: Any) -> dict[str, Any]:
         rid = new_request_id()
-        owned: Optional[QwenProvider] = None
+        owned: QwenProvider | None = None
         fn = call_model
         if fn is None:
             owned = QwenProvider()
-            def fn(messages, src, request_id):  # noqa: F811
+            def fn(messages, src, request_id):
                 resp = owned.chat_json(
                     messages,
                     source=src,

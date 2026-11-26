@@ -22,15 +22,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from app.ai import errors  # noqa: E402
-from app.ai.integration import (  # noqa: E402
-    CONNECTION_CODES,
-    TIMEOUT_CODES,
+from app.ai.integration import (
     make_parse_provider,
 )
-from app.ai.provider import ProviderConfig, QwenProvider, write_transcript  # noqa: E402
-from app.schemas.models import ParseRequest  # noqa: E402
-from app.services.experiment import run_experiment  # noqa: E402
+from app.ai.provider import ProviderConfig, QwenProvider, write_transcript
+from app.schemas.models import ParseRequest
+from app.services.experiment import run_experiment
 
 TEXT = "请用冒泡排序把3、1、2从小到大排序"
 TRANSCRIPT = ROOT / "artifacts" / "integration-transcript.jsonl"
@@ -114,8 +111,8 @@ def main() -> int:
             "code": "MODEL_UNAVAILABLE",
             "detail": str(exc),
         }
-    except Exception as exc:  # ValidationError 等
-        errs = getattr(exc, "errors", lambda: [])()
+    except Exception as exc:  # noqa: BLE001 - 汇总所有校验类异常为 422
+        errs = getattr(exc, "errors", list)()
         record["parse"] = {
             "status": "mapped_error",
             "route_status": 422,

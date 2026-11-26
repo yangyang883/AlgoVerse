@@ -72,9 +72,7 @@ def main():
             "document_count": idx.index.ntotal,
         },
         "api_for_member3": {
-            "function": "app.ai.rag.load_index(path, use_real_bge={0}).search(query, top_k=4)".format(
-                str(args.real_bge)
-            ),
+            "function": f"app.ai.rag.load_index(path, use_real_bge={args.real_bge!s}).search(query, top_k=4)",
             "input": {"query": "string", "top_k": "int, 默认 4"},
             "output_fields": [
                 "question", "answer", "retrieved", "notice", "embedding",
@@ -89,7 +87,7 @@ def main():
     print(json.dumps({"ok": True, "queries": len(results), "embedding": mode, "out": str(out)},
                      ensure_ascii=False))
     for r in results:
-        print("{0} | {1} | sources={2}".format(
+        print("{} | {} | sources={}".format(
             r["question"][:20], r["retrieved"], len(r["sources"])
         ))
 

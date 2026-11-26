@@ -87,7 +87,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity",
+            "description": "Unprocessable Content",
             "content": {
               "application/json": {
                 "schema": {
@@ -183,7 +183,7 @@
                 }
               }
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "500": {
             "content": {
@@ -272,7 +272,7 @@
                 }
               }
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "500": {
             "content": {
@@ -353,7 +353,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity",
+            "description": "Unprocessable Content",
             "content": {
               "application/json": {
                 "schema": {
@@ -441,7 +441,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity",
+            "description": "Unprocessable Content",
             "content": {
               "application/json": {
                 "schema": {
@@ -537,7 +537,7 @@
                 }
               }
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "500": {
             "content": {
@@ -636,7 +636,7 @@
                 }
               }
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "500": {
             "content": {
@@ -755,7 +755,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity",
+            "description": "Unprocessable Content",
             "content": {
               "application/json": {
                 "schema": {
@@ -843,7 +843,7 @@
             }
           },
           "422": {
-            "description": "Unprocessable Entity",
+            "description": "Unprocessable Content",
             "content": {
               "application/json": {
                 "schema": {
@@ -939,7 +939,7 @@
                 }
               }
             },
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Content"
           },
           "500": {
             "content": {
@@ -1052,7 +1052,7 @@
           "data": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ChatResult-Output"
+                "$ref": "#/components/schemas/ChatResult"
               },
               {
                 "type": "null"
@@ -1085,7 +1085,7 @@
           "data": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CompareResult-Output"
+                "$ref": "#/components/schemas/CompareResult"
               },
               {
                 "type": "null"
@@ -1118,7 +1118,7 @@
           "data": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ConversationState-Output"
+                "$ref": "#/components/schemas/ConversationState"
               },
               {
                 "type": "null"
@@ -1151,7 +1151,7 @@
           "data": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/EvidencePlan-Output"
+                "$ref": "#/components/schemas/EvidencePlan"
               },
               {
                 "type": "null"
@@ -1217,7 +1217,7 @@
           "data": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ExperimentResult-Output"
+                "$ref": "#/components/schemas/ExperimentResult"
               },
               {
                 "type": "null"
@@ -1250,7 +1250,7 @@
           "data": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ParseResult-Output"
+                "$ref": "#/components/schemas/ParseResult"
               },
               {
                 "type": "null"
@@ -1283,7 +1283,7 @@
           "data": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ReportResult-Output"
+                "$ref": "#/components/schemas/ReportResult"
               },
               {
                 "type": "null"
@@ -1408,7 +1408,7 @@
         ],
         "title": "ChatRequest"
       },
-      "ChatResult-Input": {
+      "ChatResult": {
         "properties": {
           "session_id": {
             "type": "string",
@@ -1426,37 +1426,7 @@
             "title": "Sources"
           },
           "state": {
-            "$ref": "#/components/schemas/ConversationState-Input"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "session_id",
-          "answer",
-          "state"
-        ],
-        "title": "ChatResult"
-      },
-      "ChatResult-Output": {
-        "properties": {
-          "session_id": {
-            "type": "string",
-            "title": "Session Id"
-          },
-          "answer": {
-            "type": "string",
-            "title": "Answer"
-          },
-          "sources": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Sources"
-          },
-          "state": {
-            "$ref": "#/components/schemas/ConversationState-Output"
+            "$ref": "#/components/schemas/ConversationState"
           }
         },
         "additionalProperties": false,
@@ -1486,33 +1456,11 @@
         ],
         "title": "CompareRequest"
       },
-      "CompareResult-Input": {
+      "CompareResult": {
         "properties": {
           "runs": {
             "items": {
-              "$ref": "#/components/schemas/ExperimentResult-Input"
-            },
-            "type": "array",
-            "title": "Runs"
-          },
-          "same_input": {
-            "type": "boolean",
-            "title": "Same Input"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "runs",
-          "same_input"
-        ],
-        "title": "CompareResult"
-      },
-      "CompareResult-Output": {
-        "properties": {
-          "runs": {
-            "items": {
-              "$ref": "#/components/schemas/ExperimentResult-Output"
+              "$ref": "#/components/schemas/ExperimentResult"
             },
             "type": "array",
             "title": "Runs"
@@ -1559,7 +1507,7 @@
         ],
         "title": "ConversationStartRequest"
       },
-      "ConversationState-Input": {
+      "ConversationState": {
         "properties": {
           "session_id": {
             "type": "string",
@@ -1617,126 +1565,7 @@
         ],
         "title": "ConversationState"
       },
-      "ConversationState-Output": {
-        "properties": {
-          "session_id": {
-            "type": "string",
-            "title": "Session Id"
-          },
-          "current_algorithm": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Current Algorithm"
-          },
-          "last_config": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/ExperimentConfig"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "last_run_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Run Id"
-          },
-          "summary": {
-            "type": "string",
-            "title": "Summary",
-            "default": ""
-          },
-          "modified_fields": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Modified Fields"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "session_id"
-        ],
-        "title": "ConversationState"
-      },
-      "EvidencePlan-Input": {
-        "properties": {
-          "hypothesis": {
-            "$ref": "#/components/schemas/ExperimentHypothesis"
-          },
-          "experiment_type": {
-            "type": "string",
-            "enum": [
-              "distribution_effect",
-              "same_input_comparison"
-            ],
-            "title": "Experiment Type"
-          },
-          "configurations": {
-            "items": {
-              "$ref": "#/components/schemas/ExperimentConfig"
-            },
-            "type": "array",
-            "maxItems": 10,
-            "minItems": 2,
-            "title": "Configurations"
-          },
-          "repetitions": {
-            "type": "integer",
-            "maximum": 10.0,
-            "minimum": 1.0,
-            "title": "Repetitions",
-            "default": 1
-          },
-          "plan_id": {
-            "type": "string",
-            "title": "Plan Id"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "validated",
-              "running",
-              "completed",
-              "failed"
-            ],
-            "title": "Status",
-            "default": "validated"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "hypothesis",
-          "experiment_type",
-          "configurations",
-          "plan_id",
-          "created_at"
-        ],
-        "title": "EvidencePlan"
-      },
-      "EvidencePlan-Output": {
+      "EvidencePlan": {
         "properties": {
           "hypothesis": {
             "$ref": "#/components/schemas/ExperimentHypothesis"
@@ -2090,81 +1919,7 @@
         ],
         "title": "ExperimentPlanRequest"
       },
-      "ExperimentResult-Input": {
-        "properties": {
-          "run_id": {
-            "type": "string",
-            "title": "Run Id"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "failed"
-            ],
-            "title": "Status"
-          },
-          "config": {
-            "$ref": "#/components/schemas/ExperimentConfig"
-          },
-          "input": {
-            "items": {
-              "type": "integer"
-            },
-            "type": "array",
-            "title": "Input"
-          },
-          "output": {
-            "items": {
-              "type": "integer"
-            },
-            "type": "array",
-            "title": "Output"
-          },
-          "metrics": {
-            "additionalProperties": {
-              "type": "number"
-            },
-            "type": "object",
-            "title": "Metrics"
-          },
-          "validation": {
-            "$ref": "#/components/schemas/ValidationResult"
-          },
-          "trace": {
-            "items": {
-              "$ref": "#/components/schemas/TraceEvent"
-            },
-            "type": "array",
-            "title": "Trace"
-          },
-          "trace_truncated": {
-            "type": "boolean",
-            "title": "Trace Truncated"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Created At"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "run_id",
-          "status",
-          "config",
-          "input",
-          "output",
-          "metrics",
-          "validation",
-          "trace",
-          "trace_truncated",
-          "created_at"
-        ],
-        "title": "ExperimentResult"
-      },
-      "ExperimentResult-Output": {
+      "ExperimentResult": {
         "properties": {
           "run_id": {
             "type": "string",
@@ -2290,7 +2045,7 @@
         ],
         "title": "ParseRequest"
       },
-      "ParseResult-Input": {
+      "ParseResult": {
         "properties": {
           "config": {
             "$ref": "#/components/schemas/ExperimentConfig"
@@ -2329,80 +2084,10 @@
         ],
         "title": "ParseResult"
       },
-      "ParseResult-Output": {
-        "properties": {
-          "config": {
-            "$ref": "#/components/schemas/ExperimentConfig"
-          },
-          "source": {
-            "type": "string",
-            "enum": [
-              "qwen",
-              "manual",
-              "mock"
-            ],
-            "title": "Source"
-          },
-          "requires_confirmation": {
-            "type": "boolean",
-            "title": "Requires Confirmation",
-            "default": true
-          },
-          "session_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Session Id"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "config",
-          "source"
-        ],
-        "title": "ParseResult"
-      },
-      "ReportResult-Input": {
+      "ReportResult": {
         "properties": {
           "run": {
-            "$ref": "#/components/schemas/ExperimentResult-Input"
-          },
-          "explanation": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Explanation"
-          },
-          "limitations": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Limitations"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "run"
-        ],
-        "title": "ReportResult"
-      },
-      "ReportResult-Output": {
-        "properties": {
-          "run": {
-            "$ref": "#/components/schemas/ExperimentResult-Output"
+            "$ref": "#/components/schemas/ExperimentResult"
           },
           "explanation": {
             "anyOf": [
@@ -2507,6 +2192,13 @@
           "type": {
             "type": "string",
             "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
           }
         },
         "type": "object",
