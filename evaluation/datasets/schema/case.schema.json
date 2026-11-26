@@ -165,15 +165,15 @@
       "properties": {
         "source_id": {
           "type": "string",
-          "description": "稳定可检索编号，如 CLRS-3E-7.2。禁止写“课本”“网上”。"
+          "description": "稳定可检索编号，如 CLRS-3E-7.2、SORT-004。禁止写“课本”“网上”。"
         },
         "type": {
           "type": "string",
-          "enum": ["textbook", "paper", "official_doc", "synthetic", "user_case"]
+          "enum": ["textbook", "paper", "official_doc", "online_reference", "synthetic", "user_case"]
         },
         "locator": {
           "type": "string",
-          "description": "章节 + 页码 / 伪代码段落 / 定理编号。"
+          "description": "在线来源写章/节 + 稳定 URL；教材写版本 + 章/节，页码可在冻结前统一补。"
         },
         "version": {
           "type": "string",

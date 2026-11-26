@@ -1,6 +1,6 @@
 # D3 真实执行留证规范
 
-- 对应任务：AV-M5-D03　｜　版本：v0.1　｜　维护：组员 5
+- 对应任务：AV-M5-D03　｜　版本：v0.2　｜　维护：组员 5　｜　更新：2026-11-26
 - 闸门要求：**Qwen → 配置 → 真实执行** 的请求/响应可复演；失败同样留证；Mock 与真实结果物理分离。
 
 ## 1. 当前状态（诚实记录）
@@ -9,9 +9,13 @@
 |---|---|---|
 | 留证规范与记录结构 | 已完成 | 本文件 + `scripts/run_eval.py` 自动生成 manifest |
 | 采集脚本 | 已完成（mock 验证通过） | 见 D5 |
-| 真实 Qwen 推理服务 | **未就绪** | 等待组员 1 提供可达地址与额度；当前无 `QWEN_BASE_URL` |
-| 本地 API（`/api/v1/*`） | **未就绪** | 等待组员 3 的 Mock/OpenAPI 与可启动服务 |
-| D3 闸门 | **未通过** | 原因是依赖未就绪，不是脚本缺失 |
+| 真实 Qwen 模型调用 | **模型侧已就绪** | 组员 1 在 PR #6 留存 `qwen-flash` 真实调用 10/10 证据；这不等于本评测 D3 链路已通过 |
+| Provider 接入 | **待接入** | `/parse` 依赖 `app.state.parse_provider` 注入；未注入时返回 501，组员 1 将在会审后交付接入入口及版本/超时/错误类型 |
+| ParseResult 澄清/错误映射 | **待会审确认，未冻结** | 当前 `ParseResult` 仅有 `config/source/requires_confirmation/session_id`，无法直接表达 `needs_clarification/error`；组员 1 建议映射为 HTTP 422，`error.code=E-SCHEMA-* / E-AMBIGUOUS-INPUT`，`details` 带字段路径，待组员 3 确认后执行 |
+| 本地 API（`/api/v1/*`） | **代码已交付，待启动联调** | 组员 3 的 D1–D6 已合入最新 `main`；服务未启动时脚本记录 `CONNECTION_ERROR` |
+| D3 闸门 | **未通过：待 Provider 接入** | 模型本身不再记为“未就绪”；必须补齐 Qwen → 配置 → 真实执行的完整留证 |
+
+真实模式的两类阻断必须分开记录：① 服务未启动 → `CONNECTION_ERROR`；② 服务已启动但 Provider 未注入 → HTTP 501 `NOT_IMPLEMENTED`。不得把后者写成模型不存在，也不得把 PR #6 的独立模型调用证据当成本评测的端到端证据。
 
 在真实接口可达前，**不得**把任何 mock 结果写成"真实成功率"。
 
@@ -24,7 +28,7 @@
 | RAG | `embedding_model`、`kb_version`、`top_k` | 环境变量 |
 | 提示词 | `prompt_version` | 环境变量 |
 | 数据 | `dataset_path`、`dataset_sha256`、`dataset_version` | 脚本自动计算 |
-| 请求 | 完整请求体（含 `session_id`） | 脚本原样存 `responses.jsonl` |
+| 请求 | 完整请求体与必要请求头；`/run` 的会话 ID 只放在 `X-Session-ID` | 脚本原样存 `responses.jsonl` |
 | 响应 | HTTP 状态、原始响应体、耗时 ms、`request_id` | 脚本原样存 |
 | 执行 | `run_id`（服务端返回）、`config`、`metrics`、`validation`、`trace_truncated` | 响应体 `data` 段 |
 | 失败 | 错误类、错误码、原始报文 | `failures.jsonl` |
@@ -49,7 +53,7 @@ python evaluation/scripts/run_eval.py --mode real --run-id d3-seed-full-01
 
 ```powershell
 $env:ALGOVERSE_BASE_URL="http://127.0.0.1:8000"
-$env:QWEN_MODEL="qwen-plus"
+$env:QWEN_MODEL="qwen-flash"
 $env:QWEN_TEMPERATURE="0.2"
 $env:EMBEDDING_MODEL="bge-small-zh-v1.5"
 $env:KB_VERSION="kb-0.1"
@@ -85,4 +89,4 @@ evaluation/results/raw/<run_id>/
 | 同一命令可复演出相同 `case_id` 集合 | 两次 `run_id` 的 case 列表一致 |
 | 模型/温度/seed/版本齐全 | `manifest.json` 字段无空值 |
 
-六项全过才算 D3 通过；当前第 1 项起的真实分支全部阻塞在服务可达性上。
+六项全过才算 D3 通过；当前真实分支待本地服务启动及 Provider 接入。服务未启动与 Provider 未注入分别按 `CONNECTION_ERROR` 和 HTTP 501 留证，不能合并为同一种“模型未就绪”。

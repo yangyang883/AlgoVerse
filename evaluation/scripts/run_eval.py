@@ -95,19 +95,33 @@ def validate_cases(cases: list) -> None:
     print(f"[ok] schema check passed: {len(cases)} cases")
 
 
-def build_request(case: dict, step_index: int, run_id: str) -> dict:
+def build_request(case: dict, step_index: int, run_id: str) -> tuple[dict, dict]:
     step = case["input"]["steps"][step_index]
     body = json.loads(json.dumps(step["request"]))  # deep copy
     endpoint = step["endpoint"]
-    if endpoint != "/api/v1/algorithms" and "session_id" not in body:
+    headers = {}
+    if endpoint == "/api/v1/experiments/run":
+        # /run 直接接受 ExperimentConfig，不接受 {"config": ...} 包装。
+        session_id = body.pop("session_id", None)
+        if set(body) == {"config"} and isinstance(body["config"], dict):
+            body = body["config"]
+        input_config = body.get("input")
+        if isinstance(input_config, dict) and "array" in input_config and "values" not in input_config:
+            input_config["values"] = input_config.pop("array")
+        if session_id:
+            headers["X-Session-ID"] = session_id
+    elif endpoint in ("/api/v1/chat", "/api/v1/experiments/parse") and "session_id" not in body:
         body["session_id"] = f"eval-{run_id}-{case['case_id']}"
-    return body
+    return body, headers
 
 
-def post_json(url: str, body: dict, timeout: float):
+def post_json(url: str, body: dict, timeout: float, headers: dict | None = None):
     data = json.dumps(body, ensure_ascii=False).encode("utf-8")
+    request_headers = {"Content-Type": "application/json"}
+    if headers:
+        request_headers.update(headers)
     req = urlrequest.Request(
-        url, data=data, headers={"Content-Type": "application/json"}, method="POST"
+        url, data=data, headers=request_headers, method="POST"
     )
     start = time.perf_counter()
     try:
@@ -271,10 +285,11 @@ def main() -> int:
 
             if args.mode == "dry-run":
                 for idx, step in enumerate(steps):
+                    body, headers = build_request(case, idx, run_id)
                     rf.write(json.dumps({
                         "case_id": case_id, "category": category, "step": idx,
                         "endpoint": step["endpoint"],
-                        "request": build_request(case, idx, run_id),
+                        "request": body, "request_headers": headers,
                         "mode": "dry-run", "executed": False,
                     }, ensure_ascii=False) + "\n")
                 summary.setdefault("not_executed", 0)
@@ -283,12 +298,12 @@ def main() -> int:
 
             case_runs = []
             for idx, step in enumerate(steps):
-                body = build_request(case, idx, run_id)
+                body, headers = build_request(case, idx, run_id)
                 if args.mode == "mock":
                     status, raw, latency, transport_error = mock_response(case, idx, run_id)
                 else:
                     status, raw, latency, transport_error = post_json(
-                        args.base_url.rstrip("/") + step["endpoint"], body, args.timeout
+                        args.base_url.rstrip("/") + step["endpoint"], body, args.timeout, headers
                     )
                 err, parsed, envelope_ok = classify(status, raw, transport_error)
                 if err:
@@ -298,6 +313,7 @@ def main() -> int:
                 record = {
                     "case_id": case_id, "category": category, "step": idx,
                     "endpoint": step["endpoint"], "request": body,
+                    "request_headers": headers,
                     "http_status": status, "latency_ms": round(latency, 2),
                     "error_class": err, "envelope_ok": envelope_ok, "mode": args.mode,
                     "response": parsed if parsed is not None else raw,
