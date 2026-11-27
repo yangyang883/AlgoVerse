@@ -153,5 +153,6 @@ def make_parse_provider(
                 "requires_confirmation": True,
             }
         raise_for_outcome(outcome)
+        raise AssertionError("raise_for_outcome must raise for non-ok outcome")  # pragma: no cover
 
     return provider

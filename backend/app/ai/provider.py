@@ -84,8 +84,7 @@ def mask_secret(text: str) -> str:
         text,
     )
     # 内联 sk-xxxxxxxx 形式的 Key（如用户提示词里粘贴的凭据）
-    text = re.sub(r"sk-[A-Za-z0-9._\-]{6,}", "sk-***MASKED***", text)
-    return text
+    return re.sub(r"sk-[A-Za-z0-9._\-]{6,}", "sk-***MASKED***", text)
 
 
 def new_request_id() -> str:

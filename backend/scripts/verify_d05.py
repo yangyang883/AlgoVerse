@@ -72,7 +72,10 @@ def main():
             "document_count": idx.index.ntotal,
         },
         "api_for_member3": {
-            "function": f"app.ai.rag.load_index(path, use_real_bge={args.real_bge!s}).search(query, top_k=4)",
+            "function": (
+                "app.ai.rag.load_index(path, use_real_bge="
+                f"{args.real_bge!s}).search(query, top_k=4)"
+            ),
             "input": {"query": "string", "top_k": "int, 默认 4"},
             "output_fields": [
                 "question", "answer", "retrieved", "notice", "embedding",

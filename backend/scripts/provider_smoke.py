@@ -40,7 +40,8 @@ def main() -> int:
             return 0
     except errors.AIError as exc:
         write_transcript(out, request={"model": "unknown", "messages": MESSAGES}, error=exc)
-        print(json.dumps({"ok": False, "error": exc.public_dict(), "transcript": str(out)}, ensure_ascii=False))
+        payload = {"ok": False, "error": exc.public_dict(), "transcript": str(out)}
+        print(json.dumps(payload, ensure_ascii=False))
         return 2
 
 

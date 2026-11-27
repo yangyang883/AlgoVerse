@@ -44,7 +44,11 @@ def make_live_tool_fn(provider):
             request_id=rid,
             response_format={"type": "json_object"},
         )
-        write_transcript(TRANSCRIPT, request={"messages": messages, "request_id": rid}, response=resp)
+        write_transcript(
+            TRANSCRIPT,
+            request={"messages": messages, "request_id": rid},
+            response=resp,
+        )
         return resp.content
 
     return fn
@@ -70,7 +74,13 @@ def main():
         tool_fn = make_live_tool_fn(provider)
         for s in data["samples"]:
             rid = new_request_id()
-            out = parse(s["text"], source="qwen", provider=provider, tool_fn=tool_fn, request_id=rid)
+            out = parse(
+                s["text"],
+                source="qwen",
+                provider=provider,
+                tool_fn=tool_fn,
+                request_id=rid,
+            )
             record = {
                 "id": s["id"],
                 "text": s["text"],
@@ -97,13 +107,20 @@ def main():
                     "output": result.output,
                     "metrics": result.metrics,
                 }
-                for key in ("algorithm", "size", "distribution", "seed", "values", "visualization.enabled"):
+                keys = (
+                    "algorithm", "size", "distribution",
+                    "seed", "values", "visualization.enabled",
+                )
+                for key in keys:
                     if key in s["expected"]:
-                        record["passed"] = record["passed"] and expected_value(out.config, key) == s["expected"][key]
+                        actual = expected_value(out.config, key)
+                        record["passed"] = record["passed"] and actual == s["expected"][key]
             if "error_code" in s["expected"]:
-                record["passed"] = record["passed"] and out.error_code == s["expected"]["error_code"]
+                expected_code = s["expected"]["error_code"]
+                record["passed"] = record["passed"] and out.error_code == expected_code
             elif "error_code_candidates" in s["expected"]:
-                record["passed"] = record["passed"] and out.error_code in s["expected"]["error_code_candidates"]
+                candidates = s["expected"]["error_code_candidates"]
+                record["passed"] = record["passed"] and out.error_code in candidates
             results.append(record)
 
     payload = {

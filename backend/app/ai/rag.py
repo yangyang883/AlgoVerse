@@ -192,9 +192,5 @@ class Index:
 
 
 def load_index(index_path: str | Path, use_real_bge: bool = False) -> Index:
-    embedder: Embedder
-    if use_real_bge:
-        embedder = BgeEmbedder()
-    else:
-        embedder = OfflineHashEmbedder()
+    embedder: Embedder = BgeEmbedder() if use_real_bge else OfflineHashEmbedder()
     return Index(index_path, embedder)

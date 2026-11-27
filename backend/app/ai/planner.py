@@ -119,7 +119,11 @@ def _validate_model_json(parsed: dict[str, Any]) -> ParseOutcome:
             code = errors.UNKNOWN_ALGORITHM
         elif any("parameters" in str(f) for f in fields):
             code = errors.UNKNOWN_FIELD
-        raise errors.AIError(code, "配置校验失败：" + str(exc.errors())[:400], {"errors": exc.errors()}) from exc
+        raise errors.AIError(
+            code,
+            "配置校验失败：" + str(exc.errors())[:400],
+            {"errors": exc.errors()},
+        ) from exc
 
     # 算法必须在注册表中可执行（防止绕过 schema 扩展）
     # ExperimentConfig.algorithm 是 Literal，Pydantic 校验后为 str。
@@ -139,7 +143,14 @@ def _validate_model_json(parsed: dict[str, Any]) -> ParseOutcome:
     )
 
 
-def _error_outcome(code: str, message: str, source: str, rid: str, repair: RepairInfo, raw: str) -> ParseOutcome:
+def _error_outcome(
+    code: str,
+    message: str,
+    source: str,
+    rid: str,
+    repair: RepairInfo,
+    raw: str,
+) -> ParseOutcome:
     return ParseOutcome(
         status="error",
         source=source,
@@ -215,7 +226,14 @@ def parse(
     except ValueError:
         if repair.attempted:
             repair.failed = True
-        return _error_outcome(errors.INVALID_JSON, "模型输出 JSON 无法解析", source, rid, repair, "")
+        return _error_outcome(
+            errors.INVALID_JSON,
+            "模型输出 JSON 无法解析",
+            source,
+            rid,
+            repair,
+            "",
+        )
     finally:
         if own_provider:
             provider.close()

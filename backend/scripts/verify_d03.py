@@ -8,6 +8,7 @@
 Mock 结果不得冒充真实模型结果；真实凭据到位后用 provider_smoke.py 补测。
 """
 
+import contextlib
 import json
 import sys
 from datetime import datetime, timezone
@@ -26,7 +27,8 @@ OUT = ROOT / "artifacts" / "d03-sample-results.json"
 
 
 def req_stub():
-    return Request({"type": "http", "method": "POST", "path": "/api/v1/experiments/run", "headers": []})
+    scope = {"type": "http", "method": "POST", "path": "/api/v1/experiments/run", "headers": []}
+    return Request(scope)
 
 
 def rule_based_model(text):
@@ -90,16 +92,14 @@ def make_tool_fn(model_first):
     """模型函数：第一次给原始输出；修复时给修正后的合法输出（非法样例则保持失败）。"""
     calls = {"n": 0}
 
-    def fn(messages, source, rid):
+    def fn(messages, _source, _rid):
         calls["n"] += 1
         is_repair = any(m.get("role") == "assistant" for m in messages)
         user_text = ""
         for m in messages:
             if m.get("role") == "user" and "user_request" in m.get("content", ""):
-                try:
+                with contextlib.suppress(ValueError, TypeError):
                     user_text = json.loads(m["content"]).get("user_request", "")
-                except (ValueError, TypeError):
-                    pass
         payload = model_first(user_text)
         if is_repair:
             # 非法输入样例（CFG-10）：模拟模型一次修复后仍失败，验证 E-REPAIR-FAILED 路径
@@ -145,13 +145,16 @@ def main():
                 "output": result.output,
                 "metrics": result.metrics,
             }
-            for key in ("algorithm", "size", "distribution", "seed", "values", "visualization.enabled"):
+            keys = ("algorithm", "size", "distribution", "seed", "values", "visualization.enabled")
+            for key in keys:
                 if key in s["expected"]:
-                    record["passed"] = record["passed"] and expected_value(out.config, key) == s["expected"][key]
+                    actual = expected_value(out.config, key)
+                    record["passed"] = record["passed"] and actual == s["expected"][key]
         if "error_code" in s["expected"]:
             record["passed"] = record["passed"] and out.error_code == s["expected"]["error_code"]
         elif "error_code_candidates" in s["expected"]:
-            record["passed"] = record["passed"] and out.error_code in s["expected"]["error_code_candidates"]
+            candidates = s["expected"]["error_code_candidates"]
+            record["passed"] = record["passed"] and out.error_code in candidates
         results.append(record)
 
     payload = {
