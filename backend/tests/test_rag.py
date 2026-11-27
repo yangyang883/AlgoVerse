@@ -53,7 +53,8 @@ def test_search_returns_top_k(index):
 def test_search_result_has_expected_fields(index):
     ans = index.search("冒泡排序复杂度")
     for s in ans.sources:
-        assert {"source_id", "title", "topic", "version", "source_url", "score", "excerpt"}.issubset(s.keys())
+        expected = {"source_id", "title", "topic", "version", "source_url", "score", "excerpt"}
+        assert expected.issubset(s.keys())
         assert 0.0 <= s["score"] <= 1.0
 
 

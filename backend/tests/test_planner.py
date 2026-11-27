@@ -20,11 +20,11 @@ def request_stub(path):
     return Request({"type": "http", "method": "POST", "path": path, "headers": []})
 
 
-def make_mock_fn(config_valid=True, invalid_field=False, always_fail=False, repair_fixes=True):
+def make_mock_fn(_config_valid=True, invalid_field=False, always_fail=False, repair_fixes=True):
     """返回一个模型函数：第 1 次可故意返回非法 JSON，第 2 次修复。"""
     calls = {"n": 0}
 
-    def fn(messages, source, rid):
+    def fn(messages, _source, _rid):
         calls["n"] += 1
         is_repair = any(m.get("role") == "assistant" for m in messages)
         if always_fail:
@@ -71,7 +71,7 @@ def test_one_repair_then_still_fails():
 
 
 def test_unknown_algorithm_rejected():
-    def fn(messages, source, rid):
+    def fn(_messages, _source, _rid):
         return json.dumps({"status": "error", "error_code": "E-UNKNOWN-ALGORITHM",
                            "config": None, "tool_suggestions": []})
     out = parse("用快速排序排 3,1,2", source="mock", tool_fn=fn)
@@ -81,7 +81,7 @@ def test_unknown_algorithm_rejected():
 
 
 def test_needs_clarification():
-    def fn(messages, source, rid):
+    def fn(_messages, _source, _rid):
         return json.dumps({"status": "needs_clarification", "clarification": "请指定算法",
                            "config": None, "tool_suggestions": []})
     out = parse("把它改成逆序分布", source="mock", tool_fn=fn)

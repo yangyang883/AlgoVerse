@@ -32,7 +32,10 @@ def _response(status, text):
 
 
 def _ok_body(content='{"ok":true}'):
-    return json.dumps({"choices": [{"message": {"content": content}}], "usage": {"total_tokens": 12}})
+    return json.dumps({
+        "choices": [{"message": {"content": content}}],
+        "usage": {"total_tokens": 12},
+    })
 
 
 def _provider(handler):
@@ -82,7 +85,7 @@ def test_success_and_masked_snippet():
 
 
 def test_timeout():
-    def handler(req):
+    def handler(_req):
         raise httpx.TimeoutException("simulated")
 
     with pytest.raises(errors.AIError) as ei:
@@ -93,7 +96,7 @@ def test_timeout():
 
 def test_non_2xx():
     with pytest.raises(errors.AIError) as ei:
-        _provider(lambda req: _response(429, '{"error":"rate limited"}')).chat_json(
+        _provider(lambda _req: _response(429, '{"error":"rate limited"}')).chat_json(
             [{"role": "user", "content": "hi"}]
         )
     assert ei.value.code == errors.HTTP_ERROR
@@ -103,13 +106,15 @@ def test_non_2xx():
 
 def test_invalid_json_body():
     with pytest.raises(errors.AIError) as ei:
-        _provider(lambda req: _response(200, "not-json")).chat_json([{"role": "user", "content": "hi"}])
+        _provider(lambda _req: _response(200, "not-json")).chat_json(
+            [{"role": "user", "content": "hi"}]
+        )
     assert ei.value.code == errors.INVALID_JSON
 
 
 def test_missing_choices():
     with pytest.raises(errors.AIError) as ei:
-        _provider(lambda req: _response(200, json.dumps({"choices": []}))).chat_json(
+        _provider(lambda _req: _response(200, json.dumps({"choices": []}))).chat_json(
             [{"role": "user", "content": "hi"}]
         )
     assert ei.value.code == errors.INVALID_JSON
@@ -117,7 +122,9 @@ def test_missing_choices():
 
 def test_empty_content():
     with pytest.raises(errors.AIError) as ei:
-        _provider(lambda req: _response(200, _ok_body("   "))).chat_json([{"role": "user", "content": "hi"}])
+        _provider(lambda _req: _response(200, _ok_body("   "))).chat_json(
+            [{"role": "user", "content": "hi"}]
+        )
     assert ei.value.code == errors.EMPTY_RESPONSE
 
 
@@ -129,7 +136,7 @@ def test_extract_json_object_handles_fence():
 
 
 def test_transcript_is_masked(tmp_path):
-    p = _provider(lambda req: _response(200, _ok_body()))
+    p = _provider(lambda _req: _response(200, _ok_body()))
     r = p.chat_json([{"role": "user", "content": "key=sk-SECRET123456"}])
     out = write_transcript(
         tmp_path / "transcript.jsonl",

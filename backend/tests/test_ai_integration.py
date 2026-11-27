@@ -11,7 +11,7 @@ from app.ai.integration import CONNECTION_CODES, TIMEOUT_CODES, make_parse_provi
 from app.schemas.models import ExperimentConfig, ParseRequest, ParseResult
 
 
-def ok_json(messages):
+def ok_json(_messages):
     return json.dumps({
         "status": "ok",
         "config": {
@@ -30,7 +30,7 @@ def ok_json(messages):
 
 
 def test_success_returns_contract_compatible_dict():
-    provider = make_parse_provider(source="mock", call_model=lambda m, s, r: ok_json(m))
+    provider = make_parse_provider(source="mock", call_model=lambda m, _s, _r: ok_json(m))
     result = ParseResult.model_validate(provider(ParseRequest(text="排一下3,1,2")))
     assert result.source == "mock"
     assert result.requires_confirmation is True
@@ -45,7 +45,7 @@ def test_error_code_mapping_taxonomy():
 
 
 def test_repair_failure_maps_to_validation_error_with_code():
-    def bad(messages, source, rid):
+    def bad(_messages, _source, _rid):
         return json.dumps({
             "status": "error",
             "config": None,
@@ -62,7 +62,7 @@ def test_repair_failure_maps_to_validation_error_with_code():
 
 
 def test_needs_clarification_maps_to_409_context_conflict():
-    def ambiguous(messages, source, rid):
+    def ambiguous(_messages, _source, _rid):
         return json.dumps({
             "status": "needs_clarification",
             "config": None,
@@ -82,7 +82,7 @@ def test_transcript_is_written_on_success(tmp_path):
     transcript = tmp_path / "t.jsonl"
     provider = make_parse_provider(
         source="mock",
-        call_model=lambda m, s, r: ok_json(m),
+        call_model=lambda m, _s, _r: ok_json(m),
         transcript_path=str(transcript),
     )
     provider(ParseRequest(text="排一下3,1,2"))
