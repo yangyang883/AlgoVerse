@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-11-26T06:55:56.003867+00:00",
+  "mode": "REAL QWEN CALL",
+  "text": "请用冒泡排序把3、1、2从小到大排序",
+  "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+  "model": "qwen-flash",
+  "transcript_calls": [
+    {
+      "request_id": "787d70cd-6543-4c09-ad59-5b92700cb05d",
+      "model": "qwen-flash",
+      "source": "qwen",
+      "latency_ms": 3737.24,
+      "usage": {
+        "completion_tokens": 308,
+        "prompt_tokens": 917,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 1225
+      }
+    }
+  ],
+  "parse": {
+    "status": "ok",
+    "contract": {
+      "config": {
+        "schema_version": "1.0",
+        "algorithm": "bubble_sort",
+        "mode": "experiment",
+        "input": {
+          "size": 3,
+          "distribution": "random",
+          "seed": 42,
+          "values": [
+            3,
+            1,
+            2
+          ]
+        },
+        "parameters": {},
+        "visualization": {
+          "enabled": true
+        },
+        "metrics": [
+          "comparisons",
+          "swaps",
+          "elapsed_ms"
+        ]
+      },
+      "source": "qwen",
+      "requires_confirmation": true
+    },
+    "note": "source=requires_confirmation 已就位；session_id 由组员3路由回填"
+  },
+  "run": {
+    "status": "ok",
+    "run_id": "218579df-a97d-4269-9861-7887ea51fc5c",
+    "input": [
+      3,
+      1,
+      2
+    ],
+    "output": [
+      1,
+      2,
+      3
+    ],
+    "metrics": {
+      "comparisons": 3.0,
+      "swaps": 2.0,
+      "elapsed_ms": 0.1564999984111637
+    },
+    "validation": {
+      "valid": true,
+      "reason": null
+    }
+  }
+}

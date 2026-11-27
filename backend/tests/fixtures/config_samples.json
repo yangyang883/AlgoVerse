@@ -1,0 +1,118 @@
+{
+  "_meta": {
+    "purpose": "AV-M1-D01：10 条自然语言配置样例（开发集，非冻结测试集）",
+    "source_of_truth": "backend/app/schemas/models.py 与 docs/api-contracts.md（组员3所有）",
+    "current_capability": "仓库当前仅 bubble_sort 可执行；distribution 仅 random/sorted/reversed；metrics 仅 comparisons/swaps/elapsed_ms；动画 n<=40",
+    "status_convention": "AI 内部状态与错误码见 backend/app/ai/errors.py；映射到 HTTP 状态码由组员3负责"
+  },
+  "samples": [
+    {
+      "id": "CFG-01",
+      "text": "用冒泡排序处理 20 个随机数，seed 设成 7",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "size": 20,
+        "distribution": "random",
+        "seed": 7,
+        "visualization.enabled": true
+      },
+      "covers": ["算法名", "规模", "seed"]
+    },
+    {
+      "id": "CFG-02",
+      "text": "冒泡排序，来 30 个有序数，种子 42",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "size": 30,
+        "distribution": "sorted",
+        "seed": 42
+      },
+      "covers": ["分布 sorted"]
+    },
+    {
+      "id": "CFG-03",
+      "text": "帮我用冒泡排序跑 25 个逆序排列的数",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "size": 25,
+        "distribution": "reversed",
+        "seed": 42
+      },
+      "covers": ["分布 reversed", "seed 默认值"]
+    },
+    {
+      "id": "CFG-04",
+      "text": "用冒泡排序排这个数组：[5, 3, 8, 1, 9, 2]",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "values": [5, 3, 8, 1, 9, 2],
+        "size": 6
+      },
+      "covers": ["显式数组"]
+    },
+    {
+      "id": "CFG-05",
+      "text": "冒泡排序，35 个随机数，随机种子 123",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "size": 35,
+        "distribution": "random",
+        "seed": 123
+      },
+      "covers": ["动画上限边界 n=35"]
+    },
+    {
+      "id": "CFG-06",
+      "text": "做一次性能实验，冒泡排序处理 200 个随机数，不需要动画",
+      "expected": {
+        "status": "ok",
+        "algorithm": "bubble_sort",
+        "size": 200,
+        "distribution": "random",
+        "visualization.enabled": false
+      },
+      "covers": ["大规模关闭动画"]
+    },
+    {
+      "id": "CFG-07",
+      "text": "把它改成逆序分布",
+      "expected": {
+        "status": "needs_clarification",
+        "error_code": "E-AMBIGUOUS-INPUT"
+      },
+      "note": "无任何会话上下文时不得猜测算法，必须要求补全（D06 起接入会话状态）"
+    },
+    {
+      "id": "CFG-08",
+      "text": "用 Dijkstra 算法跑一个 10 个节点的实验",
+      "expected": {
+        "status": "error",
+        "error_code": "E-UNKNOWN-ALGORITHM"
+      },
+      "note": "L1 知识问答范畴，注册表中 executable=false；不得谎称可执行"
+    },
+    {
+      "id": "CFG-09",
+      "text": "用快速排序处理 30 个随机数",
+      "expected": {
+        "status": "error",
+        "error_code": "E-UNKNOWN-ALGORITHM"
+      },
+      "note": "quick_sort 当前在注册表中为 L2/executable=false，且 Pydantic 只接受 bubble_sort；待组员2/3 扩展后更新本样例期望"
+    },
+    {
+      "id": "CFG-10",
+      "text": "冒泡排序处理 10 个数，seed 设成 -5，另外把 foo 参数设为 1",
+      "expected": {
+        "status": "error",
+        "error_code_candidates": ["E-SCHEMA-INVALID", "E-SCHEMA-UNKNOWN-FIELD"]
+      },
+      "note": "未知字段 foo 与非法值必须被 StrictModel 拒绝；触发一次修复，修复后仍失败则报错"
+    }
+  ]
+}

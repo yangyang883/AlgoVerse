@@ -1,0 +1,61 @@
+{
+  "_meta": {
+    "purpose": "AV-M1-D01：工具选择建议样例（待组员3确认契约）",
+    "boundary": "组员1只输出意图、工具建议与参数；白名单校验、状态流转、实际调用全部由组员3的 services/tools.py 独占",
+    "whitelist": [
+      "search_knowledge", "get_algorithm_capability", "generate_dataset",
+      "run_registered_algorithm", "validate_result", "compare_runs", "summarize_experiment"
+    ]
+  },
+  "samples": [
+    {
+      "id": "TOOL-01",
+      "user_text": "用冒泡排序处理 20 个随机数，seed 7",
+      "envelope": {
+        "intent": "experiment_parse",
+        "tool_suggestions": [
+          {"tool": "get_algorithm_capability", "arguments": {"algorithm": "bubble_sort"}, "reason": "确认算法在注册表中可执行"},
+          {"tool": "generate_dataset", "arguments": {"size": 20, "distribution": "random", "seed": 7}, "reason": "生成可复现输入"},
+          {"tool": "run_registered_algorithm", "arguments": {}, "reason": "执行已校验配置"},
+          {"tool": "validate_result", "arguments": {}, "reason": "校验排序结果"}
+        ],
+        "needs_clarification": false,
+        "note": "仅为建议；执行权在组员3"
+      }
+    },
+    {
+      "id": "TOOL-02",
+      "user_text": "冒泡排序的最坏情况是什么？",
+      "envelope": {
+        "intent": "knowledge_qa",
+        "tool_suggestions": [
+          {"tool": "search_knowledge", "arguments": {"query": "冒泡排序 最坏情况 O(n^2)", "top_k": 4}, "reason": "检索人工复核知识条目获取来源"}
+        ],
+        "needs_clarification": false,
+        "note": "L1 知识问答，不得触发执行器"
+      }
+    },
+    {
+      "id": "TOOL-03",
+      "user_text": "用 Dijkstra 跑一个实验",
+      "envelope": {
+        "intent": "unknown",
+        "tool_suggestions": [
+          {"tool": "get_algorithm_capability", "arguments": {"algorithm": "dijkstra"}, "reason": "查询支持等级，预计返回 L1 无执行器"}
+        ],
+        "needs_clarification": false,
+        "note": "不得伪造配置；组员3应拒绝未知工具与未注册算法"
+      }
+    },
+    {
+      "id": "TOOL-04",
+      "user_text": "直接运行这段 Python 代码并统计循环次数",
+      "envelope": {
+        "intent": "unknown",
+        "tool_suggestions": [],
+        "needs_clarification": true,
+        "note": "越界请求：模型不得建议执行任意代码"
+      }
+    }
+  ]
+}

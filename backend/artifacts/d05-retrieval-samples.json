@@ -1,0 +1,220 @@
+{
+  "generated_at": "2026-11-25T05:46:23.937392+00:00",
+  "mode": "OFFLINE HASH EMBEDDING — 不代表真实 BGE 语义检索质量",
+  "index": {
+    "file": "D:\\贸大课件\\03大三\\大三上\\专业课\\34_自然语言处理_李兵\\作业\\第十一周_期末作业\\03TaskAct\\AlgoVerse-main\\AlgoVerse-main\\knowledge\\index\\faiss_index.bin",
+    "embedding": "offline-hash",
+    "embedding_model": "offline-hash-v1",
+    "dim": 512,
+    "knowledge_version": "kb-v1.0.0",
+    "document_count": 40
+  },
+  "api_for_member3": {
+    "function": "app.ai.rag.load_index(path, use_real_bge=False).search(query, top_k=4)",
+    "input": {
+      "query": "string",
+      "top_k": "int, 默认 4"
+    },
+    "output_fields": [
+      "question",
+      "answer",
+      "retrieved",
+      "notice",
+      "embedding",
+      "knowledge_version",
+      "top_k",
+      "sources[]"
+    ],
+    "empty_result_contract": "retrieved=false, sources=[], notice 明确提示，不编造来源"
+  },
+  "results": [
+    {
+      "question": "快速排序最坏情况是什么？",
+      "answer": "根据检索到的 4 条知识条目，相关信息如下：\n[GEN-013] 比较排序的下界 O(n log n)：基于比较的排序算法最坏情况至少 Ω(n log n) 次比较，由决策树叶子数 n! 推出。该下界不约束计数排序等非比较排序。\n[SORT-010] 快速排序平均复杂度前提：在枢轴使划分较为均衡的前提下，快速排序平均比较次数约 2n ln n，即 O(n log n)。该结论依赖输入分布或随机化枢轴，不能无条件宣称。\n[SORT-011] 快速排序最坏情形：首元素枢轴 + 有序输入：当枢轴总取区间第一个元素且输入已排序（或逆序）时，每次划分只减少一个元素，递归深度为 n，比较次数 n(n-1)/2，退化为 O(n²)。这是本项目反例诊断的核心案例，仅证明该具体实现在该输入下的性质。\n[SORT-009] 快速排序基本定义与分治结构：快速排序选取枢轴，将数组划分为小于和大于枢轴的两部分，再递归排序。划分（partition）是核心步骤，枢轴选择策略直接决定递归树深度。",
+      "retrieved": true,
+      "notice": "离线预案：本次使用哈希向量检索，不代表真实 BGE 语义质量",
+      "embedding": "offline-hash",
+      "knowledge_version": "kb-v1.0.0",
+      "top_k": 4,
+      "sources": [
+        {
+          "source_id": "GEN-013",
+          "title": "比较排序的下界 O(n log n)",
+          "topic": "complexity.sorting_lower_bound",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Comparison_sort",
+          "score": 0.2632,
+          "excerpt": "基于比较的排序算法最坏情况至少 Ω(n log n) 次比较，由决策树叶子数 n! 推出。该下界不约束计数排序等非比较排序。"
+        },
+        {
+          "source_id": "SORT-010",
+          "title": "快速排序平均复杂度前提",
+          "topic": "sorting.quick.average",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Quicksort",
+          "score": 0.2017,
+          "excerpt": "在枢轴使划分较为均衡的前提下，快速排序平均比较次数约 2n ln n，即 O(n log n)。该结论依赖输入分布或随机化枢轴，不能无条件宣称。"
+        },
+        {
+          "source_id": "SORT-011",
+          "title": "快速排序最坏情形：首元素枢轴 + 有序输入",
+          "topic": "sorting.quick.worst_case",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Quicksort#Worst-case_analysis",
+          "score": 0.1851,
+          "excerpt": "当枢轴总取区间第一个元素且输入已排序（或逆序）时，每次划分只减少一个元素，递归深度为 n，比较次数 n(n-1)/2，退化为 O(n²)。这是本项目反例诊断的核心案例，仅证明该具体实现在该输入下的性质。"
+        },
+        {
+          "source_id": "SORT-009",
+          "title": "快速排序基本定义与分治结构",
+          "topic": "sorting.quick",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Quicksort",
+          "score": 0.179,
+          "excerpt": "快速排序选取枢轴，将数组划分为小于和大于枢轴的两部分，再递归排序。划分（partition）是核心步骤，枢轴选择策略直接决定递归树深度。"
+        }
+      ]
+    },
+    {
+      "question": "冒泡排序的时间复杂度前提",
+      "answer": "根据检索到的 4 条知识条目，相关信息如下：\n[SORT-002] 冒泡排序时间复杂度前提：冒泡排序最坏和平均比较次数为 n(n-1)/2，即 O(n²)。该结论针对基于相邻比较交换的实现，输入规模为 n，且假设没有提前终止优化。\n[SORT-005] 冒泡排序空间复杂度：冒泡排序为原地排序，除循环变量外只需常数额外空间 O(1)。轨迹记录会产生额外存储，但不属于算法本身的空间开销。\n[SORT-004] 冒泡排序稳定性：冒泡排序是稳定排序：相等元素之间不发生交换，相对顺序保持不变。稳定性前提是交换条件严格使用大于而非大于等于。\n[GEN-002] L2/L3/L4 支持层级定义：L2 支持前提检查、复杂度与伪代码解析但无执行器；L3 必须通过白名单与单元测试的真实执行器；L4 具备轨迹动画与报告。本项目当前只有冒泡排序达到 L3/L4，其他三种排序为 L2。",
+      "retrieved": true,
+      "notice": "离线预案：本次使用哈希向量检索，不代表真实 BGE 语义质量",
+      "embedding": "offline-hash",
+      "knowledge_version": "kb-v1.0.0",
+      "top_k": 4,
+      "sources": [
+        {
+          "source_id": "SORT-002",
+          "title": "冒泡排序时间复杂度前提",
+          "topic": "sorting.bubble.complexity",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Bubble_sort",
+          "score": 0.3668,
+          "excerpt": "冒泡排序最坏和平均比较次数为 n(n-1)/2，即 O(n²)。该结论针对基于相邻比较交换的实现，输入规模为 n，且假设没有提前终止优化。"
+        },
+        {
+          "source_id": "SORT-005",
+          "title": "冒泡排序空间复杂度",
+          "topic": "sorting.bubble.space",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Bubble_sort",
+          "score": 0.3249,
+          "excerpt": "冒泡排序为原地排序，除循环变量外只需常数额外空间 O(1)。轨迹记录会产生额外存储，但不属于算法本身的空间开销。"
+        },
+        {
+          "source_id": "SORT-004",
+          "title": "冒泡排序稳定性",
+          "topic": "sorting.bubble.stability",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Sorting_algorithm#Stability",
+          "score": 0.2978,
+          "excerpt": "冒泡排序是稳定排序：相等元素之间不发生交换，相对顺序保持不变。稳定性前提是交换条件严格使用大于而非大于等于。"
+        },
+        {
+          "source_id": "GEN-002",
+          "title": "L2/L3/L4 支持层级定义",
+          "topic": "capability.level.L2_L3_L4",
+          "version": "1.0",
+          "source_url": "https://github.com/",
+          "score": 0.2386,
+          "excerpt": "L2 支持前提检查、复杂度与伪代码解析但无执行器；L3 必须通过白名单与单元测试的真实执行器；L4 具备轨迹动画与报告。本项目当前只有冒泡排序达到 L3/L4，其他三种排序为 L2。"
+        }
+      ]
+    },
+    {
+      "question": "Dijkstra 能在平台上执行吗",
+      "answer": "根据检索到的 4 条知识条目，相关信息如下：\n[GEN-006] Dijkstra 算法前提与复杂度：Dijkstra 求非负权重图的单源最短路，基于优先队列实现为 O((V+E) log V)。负权重边会使结果错误，应改用 Bellman-Ford。本平台无该执行器，只能知识问答。\n[SORT-013] 双枢轴快速排序概念：双枢轴快排每次选取两个枢轴，把数组划分为三段。Java Arrays.sort 对基本类型采用该策略。本平台当前无该执行器，只能作知识问答（L1），不得声称可执行。\n[GEN-022] Schema 校验与未知字段拒绝：Pydantic StrictModel 设置 extra=forbid 后，任何未声明字段都会被拒绝。这防止模型输出任意参数污染执行配置。\n[GEN-007] KMP 字符串匹配核心思想：KMP 通过前缀函数（next 数组）在失配时跳过已知不匹配的前缀，避免主串指针回退，时间 O(n+m)。本平台无执行器。",
+      "retrieved": true,
+      "notice": "离线预案：本次使用哈希向量检索，不代表真实 BGE 语义质量",
+      "embedding": "offline-hash",
+      "knowledge_version": "kb-v1.0.0",
+      "top_k": 4,
+      "sources": [
+        {
+          "source_id": "GEN-006",
+          "title": "Dijkstra 算法前提与复杂度",
+          "topic": "graph.dijkstra",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm",
+          "score": 0.4834,
+          "excerpt": "Dijkstra 求非负权重图的单源最短路，基于优先队列实现为 O((V+E) log V)。负权重边会使结果错误，应改用 Bellman-Ford。本平台无该执行器，只能知识问答。"
+        },
+        {
+          "source_id": "SORT-013",
+          "title": "双枢轴快速排序概念",
+          "topic": "sorting.quick.dual_pivot",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Quicksort#Dual-pivot_quicksort",
+          "score": 0.2216,
+          "excerpt": "双枢轴快排每次选取两个枢轴，把数组划分为三段。Java Arrays.sort 对基本类型采用该策略。本平台当前无该执行器，只能作知识问答（L1），不得声称可执行。"
+        },
+        {
+          "source_id": "GEN-022",
+          "title": "Schema 校验与未知字段拒绝",
+          "topic": "ai.schema_validation",
+          "version": "1.0",
+          "source_url": "https://docs.pydantic.dev/latest/concepts/models/",
+          "score": 0.1709,
+          "excerpt": "Pydantic StrictModel 设置 extra=forbid 后，任何未声明字段都会被拒绝。这防止模型输出任意参数污染执行配置。"
+        },
+        {
+          "source_id": "GEN-007",
+          "title": "KMP 字符串匹配核心思想",
+          "topic": "string.kmp",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm",
+          "score": 0.1676,
+          "excerpt": "KMP 通过前缀函数（next 数组）在失配时跳过已知不匹配的前缀，避免主串指针回退，时间 O(n+m)。本平台无执行器。"
+        }
+      ]
+    },
+    {
+      "question": "怎么保证同输入公平对比",
+      "answer": "根据检索到的 4 条知识条目，相关信息如下：\n[SORT-018] 同输入公平对照的前提：比较两种算法的次数或耗时，必须使用完全相同的输入数组、相同环境与相同随机种子。仅修改规模或分布属于条件变化对比，不得称为同输入公平对照。\n[SORT-012] 随机枢轴对快排最坏情形的作用：随机选择枢轴使最坏情况成为低概率事件，期望比较次数为 O(n log n)。给定随机种子时结果可复现；同输入下比较首枢轴与随机枢轴属于条件变化对比，不是同分布的公平对照。\n[SORT-011] 快速排序最坏情形：首元素枢轴 + 有序输入：当枢轴总取区间第一个元素且输入已排序（或逆序）时，每次划分只减少一个元素，递归深度为 n，比较次数 n(n-1)/2，退化为 O(n²)。这是本项目反例诊断的核心案例，仅证明该具体实现在该输入下的性质。\n[GEN-016] 反例诊断的证明范围：一个反例只能证明特定实现在特定输入上的性质，不能推广为所有快排实现的最坏情形。报告措辞必须限定实现与输入前提。",
+      "retrieved": true,
+      "notice": "离线预案：本次使用哈希向量检索，不代表真实 BGE 语义质量",
+      "embedding": "offline-hash",
+      "knowledge_version": "kb-v1.0.0",
+      "top_k": 4,
+      "sources": [
+        {
+          "source_id": "SORT-018",
+          "title": "同输入公平对照的前提",
+          "topic": "experiment.methodology.same_input",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Benchmarking",
+          "score": 0.325,
+          "excerpt": "比较两种算法的次数或耗时，必须使用完全相同的输入数组、相同环境与相同随机种子。仅修改规模或分布属于条件变化对比，不得称为同输入公平对照。"
+        },
+        {
+          "source_id": "SORT-012",
+          "title": "随机枢轴对快排最坏情形的作用",
+          "topic": "sorting.quick.random_pivot",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Quicksort#Randomized_quicksort",
+          "score": 0.2098,
+          "excerpt": "随机选择枢轴使最坏情况成为低概率事件，期望比较次数为 O(n log n)。给定随机种子时结果可复现；同输入下比较首枢轴与随机枢轴属于条件变化对比，不是同分布的公平对照。"
+        },
+        {
+          "source_id": "SORT-011",
+          "title": "快速排序最坏情形：首元素枢轴 + 有序输入",
+          "topic": "sorting.quick.worst_case",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Quicksort#Worst-case_analysis",
+          "score": 0.1941,
+          "excerpt": "当枢轴总取区间第一个元素且输入已排序（或逆序）时，每次划分只减少一个元素，递归深度为 n，比较次数 n(n-1)/2，退化为 O(n²)。这是本项目反例诊断的核心案例，仅证明该具体实现在该输入下的性质。"
+        },
+        {
+          "source_id": "GEN-016",
+          "title": "反例诊断的证明范围",
+          "topic": "experiment.methodology.counterexample",
+          "version": "1.0",
+          "source_url": "https://en.wikipedia.org/wiki/Counterexample",
+          "score": 0.1356,
+          "excerpt": "一个反例只能证明特定实现在特定输入上的性质，不能推广为所有快排实现的最坏情形。报告措辞必须限定实现与输入前提。"
+        }
+      ]
+    }
+  ]
+}

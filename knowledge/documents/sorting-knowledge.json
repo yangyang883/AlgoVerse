@@ -1,0 +1,187 @@
+{
+  "knowledge_version": "kb-v1.0.0",
+  "compiled_at": "2026-11-25",
+  "reviewer_status": "组员5待复核来源；本批为组员1人工整理初稿",
+  "documents": [
+    {
+      "source_id": "SORT-001",
+      "title": "冒泡排序基本定义",
+      "topic": "sorting.bubble",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Bubble_sort",
+      "support_level": "L3",
+      "content": "冒泡排序重复遍历数组，比较相邻元素并在顺序错误时交换，使较大元素逐步移动到末尾。每轮至少确定一个最终位置。"
+    },
+    {
+      "source_id": "SORT-002",
+      "title": "冒泡排序时间复杂度前提",
+      "topic": "sorting.bubble.complexity",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Bubble_sort",
+      "support_level": "L2",
+      "content": "冒泡排序最坏和平均比较次数为 n(n-1)/2，即 O(n²)。该结论针对基于相邻比较交换的实现，输入规模为 n，且假设没有提前终止优化。"
+    },
+    {
+      "source_id": "SORT-003",
+      "title": "冒泡排序最优情形与提前终止",
+      "topic": "sorting.bubble.best_case",
+      "version": "1.0",
+      "source_url": "https://www.geeksforgeeks.org/bubble-sort/",
+      "support_level": "L2",
+      "content": "带交换标志优化的冒泡排序在已排序输入上只需一轮遍历，比较次数 n-1，为 O(n)。未实现该优化时仍为 O(n²)。本项目执行器是否有该优化以源码为准。"
+    },
+    {
+      "source_id": "SORT-004",
+      "title": "冒泡排序稳定性",
+      "topic": "sorting.bubble.stability",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Sorting_algorithm#Stability",
+      "support_level": "L2",
+      "content": "冒泡排序是稳定排序：相等元素之间不发生交换，相对顺序保持不变。稳定性前提是交换条件严格使用大于而非大于等于。"
+    },
+    {
+      "source_id": "SORT-005",
+      "title": "冒泡排序空间复杂度",
+      "topic": "sorting.bubble.space",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Bubble_sort",
+      "support_level": "L2",
+      "content": "冒泡排序为原地排序，除循环变量外只需常数额外空间 O(1)。轨迹记录会产生额外存储，但不属于算法本身的空间开销。"
+    },
+    {
+      "source_id": "SORT-006",
+      "title": "插入排序基本定义",
+      "topic": "sorting.insertion",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Insertion_sort",
+      "support_level": "L2",
+      "content": "插入排序逐个将当前元素插入到前面已排序子序列的正确位置。实现方式可以是交换型或移位型，比较次数与逆序对数量相关。"
+    },
+    {
+      "source_id": "SORT-007",
+      "title": "插入排序复杂度与输入前提",
+      "topic": "sorting.insertion.complexity",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Insertion_sort",
+      "support_level": "L2",
+      "content": "插入排序最坏 O(n²)（逆序输入），最好 O(n)（已排序输入）。其运行时间与输入中的逆序对数量成正比，适合小规模或近乎有序数据。"
+    },
+    {
+      "source_id": "SORT-008",
+      "title": "插入排序稳定性与空间",
+      "topic": "sorting.insertion.stability",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Insertion_sort",
+      "support_level": "L2",
+      "content": "插入排序通常稳定（只在严格小于时移动元素），且为原地排序 O(1) 额外空间。"
+    },
+    {
+      "source_id": "SORT-009",
+      "title": "快速排序基本定义与分治结构",
+      "topic": "sorting.quick",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort",
+      "support_level": "L2",
+      "content": "快速排序选取枢轴，将数组划分为小于和大于枢轴的两部分，再递归排序。划分（partition）是核心步骤，枢轴选择策略直接决定递归树深度。"
+    },
+    {
+      "source_id": "SORT-010",
+      "title": "快速排序平均复杂度前提",
+      "topic": "sorting.quick.average",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort",
+      "support_level": "L2",
+      "content": "在枢轴使划分较为均衡的前提下，快速排序平均比较次数约 2n ln n，即 O(n log n)。该结论依赖输入分布或随机化枢轴，不能无条件宣称。"
+    },
+    {
+      "source_id": "SORT-011",
+      "title": "快速排序最坏情形：首元素枢轴 + 有序输入",
+      "topic": "sorting.quick.worst_case",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort#Worst-case_analysis",
+      "support_level": "L2",
+      "content": "当枢轴总取区间第一个元素且输入已排序（或逆序）时，每次划分只减少一个元素，递归深度为 n，比较次数 n(n-1)/2，退化为 O(n²)。这是本项目反例诊断的核心案例，仅证明该具体实现在该输入下的性质。"
+    },
+    {
+      "source_id": "SORT-012",
+      "title": "随机枢轴对快排最坏情形的作用",
+      "topic": "sorting.quick.random_pivot",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort#Randomized_quicksort",
+      "support_level": "L2",
+      "content": "随机选择枢轴使最坏情况成为低概率事件，期望比较次数为 O(n log n)。给定随机种子时结果可复现；同输入下比较首枢轴与随机枢轴属于条件变化对比，不是同分布的公平对照。"
+    },
+    {
+      "source_id": "SORT-013",
+      "title": "双枢轴快速排序概念",
+      "topic": "sorting.quick.dual_pivot",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Quicksort#Dual-pivot_quicksort",
+      "support_level": "L1",
+      "content": "双枢轴快排每次选取两个枢轴，把数组划分为三段。Java Arrays.sort 对基本类型采用该策略。本平台当前无该执行器，只能作知识问答（L1），不得声称可执行。"
+    },
+    {
+      "source_id": "SORT-014",
+      "title": "归并排序基本定义",
+      "topic": "sorting.merge",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Merge_sort",
+      "support_level": "L2",
+      "content": "归并排序采用分治：把数组递归分成两半分别排序，再合并两个有序子序列。合并过程需要辅助数组。"
+    },
+    {
+      "source_id": "SORT-015",
+      "title": "归并排序复杂度与稳定性",
+      "topic": "sorting.merge.complexity",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Merge_sort",
+      "support_level": "L2",
+      "content": "归并排序最坏、平均、最好时间均为 O(n log n)，稳定，但需要 O(n) 额外空间。与输入初始顺序无关是其稳定表现的前提。"
+    },
+    {
+      "source_id": "SORT-016",
+      "title": "四种排序的稳定性对照",
+      "topic": "sorting.comparison.stability",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Sorting_algorithm#Stability",
+      "support_level": "L2",
+      "content": "常见实现中冒泡、插入、归并为稳定排序；快速排序通常不稳定，因为划分交换会改变相等元素的相对顺序。"
+    },
+    {
+      "source_id": "SORT-017",
+      "title": "四种排序的空间开销对照",
+      "topic": "sorting.comparison.space",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Sorting_algorithm",
+      "support_level": "L2",
+      "content": "冒泡、插入、快排通常为 O(1) 或 O(log n)（递归栈）额外空间；归并排序需要 O(n) 辅助数组。对比时需说明是否计入递归栈与轨迹存储。"
+    },
+    {
+      "source_id": "SORT-018",
+      "title": "同输入公平对照的前提",
+      "topic": "experiment.methodology.same_input",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Benchmarking",
+      "support_level": "L2",
+      "content": "比较两种算法的次数或耗时，必须使用完全相同的输入数组、相同环境与相同随机种子。仅修改规模或分布属于条件变化对比，不得称为同输入公平对照。"
+    },
+    {
+      "source_id": "SORT-019",
+      "title": "比较次数与写入次数的区分",
+      "topic": "experiment.metrics.counting",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Analysis_of_algorithms",
+      "support_level": "L2",
+      "content": "比较次数只统计明确的相邻或枢轴比较操作；swap 与 write 应分开计数。耗时测量应排除 UI 动画与轨迹序列化开销，否则指标不可比。"
+    },
+    {
+      "source_id": "SORT-020",
+      "title": "逆序对与插入排序运行时间",
+      "topic": "sorting.insertion.inversions",
+      "version": "1.0",
+      "source_url": "https://en.wikipedia.org/wiki/Inversion_(discrete_mathematics)",
+      "support_level": "L2",
+      "content": "逆序对是满足 i<j 且 a[i]>a[j] 的二元组。插入排序的移位次数等于逆序对数，因此近乎有序输入的逆序对很少，运行接近线性。"
+    }
+  ]
+}
