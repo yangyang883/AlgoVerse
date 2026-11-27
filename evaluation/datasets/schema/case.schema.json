@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://algoverse.local/schema/case.schema.json",
+  "title": "AlgoVerse 评测题条目",
+  "description": "单道评测题的结构定义。题集文件为 JSONL（每行一个对象）或 JSON 数组。字段路径（如 data.config.algorithm）均以组员3 在 D2 发布的 OpenAPI 为准，契约变更须同步升 dataset_version。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["case_id", "category", "dataset_version", "input", "expected", "scoring", "source", "review", "created_by", "created_at"],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^(KNW|CFG|EXE|CEX|INV)-[0-9]{4}$",
+      "description": "唯一题号。前缀=类别：KNW 知识，CFG 配置与追问，EXE 执行与性能解释，CEX 反例与边界，INV 异常/非法输入。"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["knowledge", "config_followup", "execution_explain", "counterexample", "invalid_input"],
+      "description": "任务类别。目标配额 25/30/20/15/10=100（工期紧张可降 80，须记录实际数量与覆盖比例）。"
+    },
+    "subcategory": {
+      "type": "string",
+      "description": "细分类，如 sorting_complexity、multi_turn_revise、boundary_limit。"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard"],
+      "default": "medium"
+    },
+    "dataset_version": {
+      "type": "string",
+      "description": "所属题集版本，如 v0.1（开发集）。冻结集另建 v1.0-frozen。"
+    },
+    "split": {
+      "type": "string",
+      "enum": ["dev", "frozen"],
+      "default": "dev",
+      "description": "开发集 / 冻结测试集。冻结集不允许用于反复调 Prompt。"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "steps"],
+      "description": "评测脚本按 steps 顺序发送请求；单轮题 steps 长度为 1，多轮题为 2 以上。",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["chat", "parse", "run", "compare", "multi_turn"],
+          "description": "主要考察的入口，用于分组统计。"
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["endpoint", "request"],
+            "properties": {
+              "endpoint": {
+                "type": "string",
+                "enum": [
+                  "/api/v1/algorithms",
+                  "/api/v1/chat",
+                  "/api/v1/experiments/parse",
+                  "/api/v1/experiments/run",
+                  "/api/v1/experiments/compare"
+                ]
+              },
+              "request": {
+                "type": "object",
+                "description": "原样发送的请求体，脚本不改写契约字段。/chat 用 message，/parse 用 text，/run 直接放 ExperimentConfig 且数组写 input.values；chat/parse 的 session_id 可由脚本注入。"
+              },
+              "headers": {
+                "type": "object",
+                "description": "原样发送的 HTTP 请求头；/run 的会话 ID 使用 X-Session-ID，不写入请求体。",
+                "additionalProperties": { "type": "string" }
+              },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "preconditions": {
+          "type": "object",
+          "description": "跑题前置条件，如需要预先建立的会话状态或已存在的 run_id。",
+          "additionalProperties": true
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "人工认定的标准答案与预期值。禁止填入模型输出。",
+      "properties": {
+        "answer_points": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "必须命中的原子要点，一条一件事，可单独判定。"
+        },
+        "required_fields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "必须存在的响应字段路径，点号表示层级，如 data.config.input.distribution。"
+        },
+        "field_values": {
+          "type": "object",
+          "description": "字段路径到期望值的映射，用于客观字段比对。",
+          "additionalProperties": true
+        },
+        "forbidden_fields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "响应中不得出现的字段路径，如未知字段 config.parameters.color。"
+        },
+        "reference_value": {
+          "description": "可核验的参考值，如真实执行得到的数组。",
+          "type": ["array", "number", "string", "object", "boolean", "null"]
+        },
+        "reference_metrics": {
+          "type": "object",
+          "description": "可核验的指标参考值，如 comparisons=28。只填实现确定的值，深度等受计数口径影响的指标须注明。",
+          "additionalProperties": true
+        },
+        "must_cite_source": {
+          "type": "boolean",
+          "default": false,
+          "description": "知识题是否要求给出出处引用。"
+        },
+        "should_reject": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否必须拒绝而非执行（非法输入、缺上下文、越界参数）。"
+        },
+        "http_status": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599,
+          "description": "业务响应的预期 HTTP 状态码；501 等执行阻塞不得写成通过预期。"
+        },
+        "error_code": {
+          "type": "string",
+          "enum": ["CONTEXT_CONFLICT", "MODEL_TIMEOUT", "MODEL_UNAVAILABLE", "VALIDATION_ERROR"],
+          "description": "已冻结的契约级错误码；E-* 细粒度码只留内部日志。"
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "max_score"],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["human_rubric", "field_match", "executor_check", "refusal_check"],
+          "description": "评分方式。脚本只采集原始响应，不执行主观评分。"
+        },
+        "max_score": { "type": "number", "exclusiveMinimum": 0, "default": 1 },
+        "rubric": {
+          "type": "array",
+          "description": "人工评分细则，权重之和应为 1。",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["point", "weight"],
+            "properties": {
+              "point": { "type": "string" },
+              "weight": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+            }
+          }
+        },
+        "auto_checks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "客观检查项标识，由后续统计脚本实现，如 field_equal、array_equals、metrics_equal、reject_without_execute、trace_truncated_flag。"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "type"],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "description": "稳定可检索编号，如 CLRS-3E-7.2、SORT-004。禁止写“课本”“网上”。"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["textbook", "paper", "official_doc", "online_reference", "synthetic", "user_case"]
+        },
+        "locator": {
+          "type": "string",
+          "description": "在线来源写章/节 + 稳定 URL；教材写版本 + 章/节，页码可在冻结前统一补。"
+        },
+        "version": {
+          "type": "string",
+          "description": "来源版本，如 CLRS 3rd ed.、kb-0.3。"
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["draft", "pending", "reviewed", "rejected"],
+          "description": "draft 初稿；pending 待会审；reviewed 已复核可用；rejected 退回修订。"
+        },
+        "reviewer": { "type": "string" },
+        "reviewed_at": { "type": "string", "format": "date" },
+        "note": { "type": "string" }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "created_by": { "type": "string" },
+    "created_at": { "type": "string", "format": "date" }
+  }
+}

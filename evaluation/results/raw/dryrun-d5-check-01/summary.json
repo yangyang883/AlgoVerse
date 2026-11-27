@@ -1,0 +1,13 @@
+{
+  "run_id": "dryrun-d5-check-01",
+  "mode": "dry-run",
+  "scoring": "not_run",
+  "total_cases": 23,
+  "not_executed": 23,
+  "ok_cases": 0,
+  "failed_cases": 0,
+  "by_category": {},
+  "by_error_class": {},
+  "finished_at": "2026-11-25T18:27:40+08:00",
+  "note": "本文件仅统计请求是否成功返回合法信封，不含任何正确性评分。"
+}

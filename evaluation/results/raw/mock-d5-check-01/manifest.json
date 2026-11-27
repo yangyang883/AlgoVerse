@@ -1,0 +1,32 @@
+{
+  "run_id": "mock-d5-check-01",
+  "mode": "mock",
+  "is_mock": true,
+  "scoring": "not_run",
+  "started_at": "2026-11-25T18:27:34+08:00",
+  "finished_at": "2026-11-25T18:27:35+08:00",
+  "base_url": null,
+  "dataset": {
+    "path": "datasets/v0.1/cases.seed.jsonl",
+    "sha256": "7043c0737b3aee7aea02e0e7871f32c814aa1ab6364880248db0f20ed8cc2e7f",
+    "version": "v0.1",
+    "case_count": 23
+  },
+  "model": {
+    "model_id": "unset",
+    "temperature": "unset",
+    "for_real_run": false
+  },
+  "rag": {
+    "embedding_model": "unset",
+    "kb_version": "unset"
+  },
+  "prompt_version": "unset",
+  "environment": {
+    "hostname": "SD-20240624PILK",
+    "os": "Windows-11-10.0.22631-SP0",
+    "python": "3.14.5",
+    "git_commit": "unknown"
+  },
+  "command": "build\\evaluation\\scripts\\run_eval.py --mode mock --run-id mock-d5-check-01"
+}

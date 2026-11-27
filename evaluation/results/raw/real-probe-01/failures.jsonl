@@ -1,0 +1,2 @@
+{"case_id": "KNW-0001", "category": "knowledge", "run_id": "real-probe-01", "primary_code": "CONNECTION_ERROR", "evidence": {"steps": [{"step": 0, "error": "CONNECTION_ERROR", "status": null}]}, "status": "open", "judged_at": null}
+{"case_id": "KNW-0002", "category": "knowledge", "run_id": "real-probe-01", "primary_code": "CONNECTION_ERROR", "evidence": {"steps": [{"step": 0, "error": "CONNECTION_ERROR", "status": null}]}, "status": "open", "judged_at": null}

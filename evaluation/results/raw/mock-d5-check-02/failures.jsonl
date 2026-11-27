@@ -1,0 +1,2 @@
+{"case_id": "CFG-0003", "category": "config_followup", "run_id": "mock-d5-check-02", "primary_code": "ENVELOPE_INVALID", "evidence": {"steps": [{"step": 0, "error": "ENVELOPE_INVALID", "status": 200}, {"step": 1, "error": null, "status": 200}]}, "status": "open", "judged_at": null}
+{"case_id": "EXE-0001", "category": "execution_explain", "run_id": "mock-d5-check-02", "primary_code": "HTTP_502", "evidence": {"steps": [{"step": 0, "error": "HTTP_502", "status": 502}, {"step": 1, "error": null, "status": 200}]}, "status": "open", "judged_at": null}

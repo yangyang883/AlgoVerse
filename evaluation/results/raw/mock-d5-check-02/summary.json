@@ -1,0 +1,41 @@
+{
+  "run_id": "mock-d5-check-02",
+  "mode": "mock",
+  "scoring": "not_run",
+  "total_cases": 23,
+  "ok_cases": 21,
+  "failed_cases": 2,
+  "by_category": {
+    "knowledge": {
+      "total": 5,
+      "ok": 5,
+      "failed": 0
+    },
+    "config_followup": {
+      "total": 5,
+      "ok": 4,
+      "failed": 1
+    },
+    "execution_explain": {
+      "total": 5,
+      "ok": 4,
+      "failed": 1
+    },
+    "counterexample": {
+      "total": 4,
+      "ok": 4,
+      "failed": 0
+    },
+    "invalid_input": {
+      "total": 4,
+      "ok": 4,
+      "failed": 0
+    }
+  },
+  "by_error_class": {
+    "ENVELOPE_INVALID": 1,
+    "HTTP_502": 1
+  },
+  "finished_at": "2026-11-25T18:27:39+08:00",
+  "note": "本文件仅统计请求是否成功返回合法信封，不含任何正确性评分。"
+}
