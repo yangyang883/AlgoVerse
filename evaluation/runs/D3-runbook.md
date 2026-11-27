@@ -1,6 +1,6 @@
 # D3 真实执行留证规范
 
-- 对应任务：AV-M5-D03　｜　版本：v0.2　｜　维护：组员 5　｜　更新：2026-11-26
+- 对应任务：AV-M5-D03　｜　版本：v0.3　｜　维护：组员 5　｜　更新：2026-11-27
 - 闸门要求：**Qwen → 配置 → 真实执行** 的请求/响应可复演；失败同样留证；Mock 与真实结果物理分离。
 
 ## 1. 当前状态（诚实记录）
@@ -10,8 +10,10 @@
 | 留证规范与记录结构 | 已完成 | 本文件 + `scripts/run_eval.py` 自动生成 manifest |
 | 采集脚本 | 已完成（mock 验证通过） | 见 D5 |
 | 真实 Qwen 模型调用 | **模型侧已就绪** | 组员 1 在 PR #6 留存 `qwen-flash` 真实调用 10/10 证据；这不等于本评测 D3 链路已通过 |
-| Provider 接入 | **待接入** | `/parse` 依赖 `app.state.parse_provider` 注入；未注入时返回 501，组员 1 将在会审后交付接入入口及版本/超时/错误类型 |
-| ParseResult 澄清/错误映射 | **待会审确认，未冻结** | 当前 `ParseResult` 仅有 `config/source/requires_confirmation/session_id`，无法直接表达 `needs_clarification/error`；组员 1 建议映射为 HTTP 422，`error.code=E-SCHEMA-* / E-AMBIGUOUS-INPUT`，`details` 带字段路径，待组员 3 确认后执行 |
+| Provider / `/parse` 接线 | **待接入** | 组员 3 负责 `/parse` 接线；组员 1 不改 `main.py`、不加启动钩子，只维护 Provider / Planner / RAG；未注入时返回 501 |
+| 澄清/错误响应映射 | **已定案** | 409 `CONTEXT_CONFLICT`；504 `MODEL_TIMEOUT`；503 `MODEL_UNAVAILABLE`；非法 JSON / Schema / 不支持算法为 422 `VALIDATION_ERROR`。业务错误走 `error` 信封，`E-*` 仅内部日志，`details` 只写真实字段路径 |
+| 五题路径与字段 | **已按契约改题** | KNW-0001 / CEX-0001 的 `/chat` 暂为 `BLOCKED`（501 不通过）；CFG-0001 / INV-0001 用 `/parse` + `text`；EXE-0001 用 `/run` + 裸 `ExperimentConfig` + `input.values` |
+| 四排序 HTTP 接入与验收 | **组员 3 推进中，逐算法验收** | 先检查注册、Schema、参数、TraceEvent 和指标兼容性，再做真实 `/run` 验收；仅通过的算法标为可执行。CEX-0001 单测只作阶段性证据，接入后保存 `run_id`、轨迹和验证结果；`/chat` 仍单独记 `BLOCKED` |
 | 本地 API（`/api/v1/*`） | **代码已交付，待启动联调** | 组员 3 的 D1–D6 已合入最新 `main`；服务未启动时脚本记录 `CONNECTION_ERROR` |
 | D3 闸门 | **未通过：待 Provider 接入** | 模型本身不再记为“未就绪”；必须补齐 Qwen → 配置 → 真实执行的完整留证 |
 

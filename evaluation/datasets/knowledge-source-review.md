@@ -52,5 +52,6 @@
 
 - 引用粒度已定为"章/节 + 稳定 URL"，采用两阶段复核，页码不再作为 `reviewed` 硬门槛。
 - KNW-0005 不再等待教材指定，改用上述在线来源；组员 2 PR #12 已确认四种实现全部吻合，题目状态恢复 `draft`。
-- 联合会审定为 2026-11-26 10:00–10:30，会后由组员 1 按会审结论更新相关题的 `review.status`。
-- `ParseResult` 对澄清/错误的表达方式仍需会审：组员 1 建议 HTTP 422 + `E-SCHEMA-* / E-AMBIGUOUS-INPUT`，`details` 带字段路径，待组员 3 确认。
+- 23 题继续保持 `draft`，由组员 5 对每题实际复核评分规则与来源后逐条更新，不因规则确认而批量改为 `reviewed`。
+- 错误映射已定案：澄清 409 `CONTEXT_CONFLICT`，模型超时/不可用 504 `MODEL_TIMEOUT` / 503 `MODEL_UNAVAILABLE`，非法 JSON / Schema / 不支持算法 422 `VALIDATION_ERROR`；`E-*` 仅内部日志，`details` 只写真实字段路径。
+- KNW-0001、CEX-0001 的 `/chat` 继续标记 `BLOCKED`，501 不计通过。四排序 HTTP 验收前，CEX-0001 的执行器单测只作阶段性证据；HTTP 接入后须用真实 `/run` 保存 `run_id`、轨迹和验证结果，不与 `/chat` 问答验收混同。

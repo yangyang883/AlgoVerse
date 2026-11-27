@@ -67,7 +67,12 @@
               },
               "request": {
                 "type": "object",
-                "description": "原样发送的请求体。字段以 OpenAPI 为准；session_id 由脚本在跑题时注入。"
+                "description": "原样发送的请求体，脚本不改写契约字段。/chat 用 message，/parse 用 text，/run 直接放 ExperimentConfig 且数组写 input.values；chat/parse 的 session_id 可由脚本注入。"
+              },
+              "headers": {
+                "type": "object",
+                "description": "原样发送的 HTTP 请求头；/run 的会话 ID 使用 X-Session-ID，不写入请求体。",
+                "additionalProperties": { "type": "string" }
               },
               "note": { "type": "string" }
             }
@@ -123,6 +128,17 @@
           "type": "boolean",
           "default": false,
           "description": "是否必须拒绝而非执行（非法输入、缺上下文、越界参数）。"
+        },
+        "http_status": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599,
+          "description": "业务响应的预期 HTTP 状态码；501 等执行阻塞不得写成通过预期。"
+        },
+        "error_code": {
+          "type": "string",
+          "enum": ["CONTEXT_CONFLICT", "MODEL_TIMEOUT", "MODEL_UNAVAILABLE", "VALIDATION_ERROR"],
+          "description": "已冻结的契约级错误码；E-* 细粒度码只留内部日志。"
         },
         "notes": { "type": "string" }
       }

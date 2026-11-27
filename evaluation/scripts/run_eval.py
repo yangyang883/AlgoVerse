@@ -99,18 +99,8 @@ def build_request(case: dict, step_index: int, run_id: str) -> tuple[dict, dict]
     step = case["input"]["steps"][step_index]
     body = json.loads(json.dumps(step["request"]))  # deep copy
     endpoint = step["endpoint"]
-    headers = {}
-    if endpoint == "/api/v1/experiments/run":
-        # /run 直接接受 ExperimentConfig，不接受 {"config": ...} 包装。
-        session_id = body.pop("session_id", None)
-        if set(body) == {"config"} and isinstance(body["config"], dict):
-            body = body["config"]
-        input_config = body.get("input")
-        if isinstance(input_config, dict) and "array" in input_config and "values" not in input_config:
-            input_config["values"] = input_config.pop("array")
-        if session_id:
-            headers["X-Session-ID"] = session_id
-    elif endpoint in ("/api/v1/chat", "/api/v1/experiments/parse") and "session_id" not in body:
+    headers = dict(step.get("headers", {}))
+    if endpoint in ("/api/v1/chat", "/api/v1/experiments/parse") and "session_id" not in body:
         body["session_id"] = f"eval-{run_id}-{case['case_id']}"
     return body, headers
 
