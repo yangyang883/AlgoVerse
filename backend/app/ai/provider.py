@@ -299,27 +299,17 @@ def write_transcript(
     response: ModelResponse | None = None,
     error: errors.AIError | None = None,
 ) -> Path:
-    """把一次请求/响应写入脱敏 JSONL；敏感字段先掩码。"""
+    """只记录调用元数据；用户输入、模型正文及错误详情均不落盘。"""
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     record = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "source": response.source if response else "qwen",
         "request_id": response.request_id if response else request.get("request_id", ""),
-        "request": json.loads(mask_secret(json.dumps(request, ensure_ascii=False))),
-        "response": None,
-        "error": None,
+        "model": response.model if response else None,
+        "latency_ms": response.latency_ms if response else None,
+        "error_code": error.code if error else None,
     }
-    if response is not None:
-        record["response"] = {
-            "content_preview": response.content[:800],
-            "raw_snippet": response.raw_snippet,
-            "model": response.model,
-            "usage": response.usage,
-            "latency_ms": response.latency_ms,
-        }
-    if error is not None:
-        record["error"] = error.public_dict()
     with p.open("a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
     return p

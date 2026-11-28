@@ -15,6 +15,7 @@ from app.ai.provider import (
     ENV_API_KEY,
     ENV_BASE_URL,
     ENV_MODEL,
+    ModelResponse,
     ProviderConfig,
     QwenProvider,
     extract_json_object,
@@ -145,7 +146,33 @@ def test_transcript_is_masked(tmp_path):
     )
     text = out.read_text(encoding="utf-8")
     assert "SECRET123456" not in text
-    assert "***MASKED***" in text
+    assert "messages" not in text
+    assert "content_preview" not in text
+    assert r.request_id in text
+
+
+def test_transcript_never_writes_prompts_model_text_or_error_details(tmp_path):
+    marker = "DUMMY_API_KEY_VALUE_12345"
+    personal = "姓名：测试同学；电话：000-0000-0000"
+    special = "<private>&\"'\\\n"
+    response = ModelResponse(
+        content=marker + personal + special,
+        request_id="test-request",
+        model="qwen-flash",
+        source="qwen",
+        raw_snippet=marker + personal,
+    )
+    path = tmp_path / "transcript.jsonl"
+    write_transcript(path, request={"messages": [personal, marker]}, response=response)
+    write_transcript(
+        path,
+        request={"request_id": "test-request", "messages": [marker]},
+        error=errors.AIError(errors.HTTP_ERROR, "failed", {"body": marker + personal + special}),
+    )
+    text = path.read_text(encoding="utf-8")
+    for forbidden in (marker, personal, special, "messages", "raw_snippet", "content_preview"):
+        assert forbidden not in text
+    assert '"error_code": "E-QWEN-HTTP"' in text
 
 
 def test_environment_variable_names():

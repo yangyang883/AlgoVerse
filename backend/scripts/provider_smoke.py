@@ -4,7 +4,7 @@
     python scripts/provider_smoke.py
 
 要求：设置 QWEN_BASE_URL / QWEN_MODEL / QWEN_API_KEY 环境变量。
-输出：backend/artifacts/provider_smoke.jsonl（自动脱敏，不记录 Key）。
+输出：backend/artifacts/provider_smoke.jsonl（仅调用元数据，不记录正文或 Key）。
 无凭据时脚本直接退出并提示，不会把 Mock 结果冒充真实调用。
 """
 
@@ -34,13 +34,12 @@ def main() -> int:
                 "source": r.source,
                 "model": r.model,
                 "latency_ms": r.latency_ms,
-                "content_preview": r.content[:120],
                 "transcript": str(out),
             }, ensure_ascii=False))
             return 0
     except errors.AIError as exc:
         write_transcript(out, request={"model": "unknown", "messages": MESSAGES}, error=exc)
-        payload = {"ok": False, "error": exc.public_dict(), "transcript": str(out)}
+        payload = {"ok": False, "error_code": exc.code, "transcript": str(out)}
         print(json.dumps(payload, ensure_ascii=False))
         return 2
 
